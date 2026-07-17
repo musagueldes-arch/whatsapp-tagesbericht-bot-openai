@@ -28,6 +28,11 @@ http://localhost:3000/
 Impressum und Datenschutzerklärung enthalten Platzhalter (z. B. E-Mail, USt-IdNr.,
 Handwerkskammer), die vor Veröffentlichung mit den korrekten Angaben zu befüllen sind.
 
+Die Bildflächen (Hero, Leistungen, Referenzen) sind aktuell als gestaltete
+Farbflächen umgesetzt und funktionieren ohne Fotos. Echte Projektfotos lassen sich
+später einbinden, indem die jeweiligen `.scard__media--*` / `.gitem--*` Flächen in
+`public/styles.css` mit einem `background-image` versehen werden.
+
 ## Einrichtung
 
 ```bash
