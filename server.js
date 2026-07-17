@@ -421,7 +421,8 @@ async function handleWaermepumpe(d) {
     `\n*Gebäude:* ${inp.gebaeudetyp || '-'} · ${inp.flaeche || '-'} m² · ${inp.sanierung || '-'}\n` +
     `*Aktuell:* ${inp.aktuell || '-'} · ${inp.verteilung || '-'}\n` +
     `*Geschätzte Heizlast:* ${e.heizlast != null ? e.heizlast + ' kW' : '-'}\n` +
-    `*Empfehlung:* ${e.typ || '-'}`;
+    `*Empfehlung:* ${e.typ || '-'}` +
+    (e.ersparnis ? `\n*Geschätzte Ersparnis:* ~ ${e.ersparnis.von}–${e.ersparnis.bis} €/Jahr ggü. ${e.ersparnis.system}` : '');
   await sendText(notify, txt);
 }
 

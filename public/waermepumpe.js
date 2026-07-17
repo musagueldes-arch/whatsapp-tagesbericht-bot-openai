@@ -51,6 +51,8 @@
   // Spezifische Heizlast (W/m²) und Jahres-Wärmebedarf (kWh/m²·a) nach Gebäudezustand.
   var W_PRO_M2 = { neubau: 40, saniert: 60, teilsaniert: 90, unsaniert: 120 };
   var KWH_PRO_M2 = { neubau: 45, saniert: 90, teilsaniert: 130, unsaniert: 180 };
+  // Angenommene Energiepreise (€/kWh) – leicht anpassbar
+  var PREISE = { gas: 0.11, oel: 0.11, stromDirekt: 0.35, wpStrom: 0.28 };
 
   function estimate(d) {
     var flaeche = Math.max(20, Math.min(2000, Number(d.flaeche) || 0));
@@ -73,6 +75,25 @@
       ? 'Mit Heizkörpern kann eine höhere Vorlauftemperatur nötig sein — wir prüfen die Eignung vor Ort.'
       : 'Ihre Wärmeverteilung eignet sich gut für den effizienten Betrieb einer Wärmepumpe.';
 
+    // ── Wirtschaftlichkeit (grobe Orientierung, Preise als Annahmen) ────────
+    var wpStromKosten = Math.round(strom * PREISE.wpStrom);
+    var altKosten = null, altSystem = '';
+    if (d.aktuell === 'Gas') { altKosten = Math.round((jahresWaerme / 0.90) * PREISE.gas); altSystem = 'Gasheizung'; }
+    else if (d.aktuell === 'Öl') { altKosten = Math.round((jahresWaerme / 0.85) * PREISE.oel); altSystem = 'Ölheizung'; }
+    else if (d.aktuell === 'Strom/Nachtspeicher') { altKosten = Math.round(jahresWaerme * PREISE.stromDirekt); altSystem = 'Stromheizung'; }
+
+    var ersparnis = null;
+    if (altKosten != null) {
+      var diff = Math.max(0, altKosten - wpStromKosten);
+      ersparnis = { von: roundTo(diff * 0.85, 50), bis: roundTo(diff * 1.15, 50), system: altSystem };
+    }
+
+    // Grober Investitionsrahmen nur für Ein-/Zweifamilienhäuser
+    var invest = null;
+    if (d.gebaeudetyp === 'Einfamilienhaus' || d.gebaeudetyp === 'Doppel-/Reihenhaus') {
+      invest = { von: 25000, bis: 40000 };
+    }
+
     return {
       heizlast: Math.round(heizlast * 10) / 10,
       leistungsklasse: Math.max(4, Math.ceil(heizlast)),
@@ -80,9 +101,16 @@
       strom: strom,
       jaz: jaz,
       typ: typ,
-      vorlaufHinweis: vorlaufHinweis
+      vorlaufHinweis: vorlaufHinweis,
+      wpStromKosten: wpStromKosten,
+      altKosten: altKosten,
+      ersparnis: ersparnis,
+      invest: invest
     };
   }
+
+  function roundTo(v, step) { return Math.round(v / step) * step; }
+  function euro(n) { return n.toLocaleString('de-DE') + ' €'; }
 
   function fmt(n) { return n.toLocaleString('de-DE'); }
 
@@ -111,7 +139,33 @@
         '<p>' + e.vorlaufHinweis + '</p>' +
         '<p class="result__foerder"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-euro"/></svg> ' +
           'Für den Heizungstausch sind aktuell staatliche Zuschüsse möglich (BEG-Förderung, bis zu 70&nbsp;% der Kosten, abhängig von Ihrer Situation). Wir beraten Sie zur Förderung.</p>' +
+      '</div>' +
+      ecoBlock(e);
+  }
+
+  // Wirtschaftlichkeits-Block (nur wenn sinnvoll berechenbar)
+  function ecoBlock(e) {
+    var rows = '';
+    if (e.ersparnis) {
+      rows += '<div class="eco-row">' +
+        '<span class="eco-row__label">Geschätzte Ersparnis ggü. ' + e.ersparnis.system + '</span>' +
+        '<span class="eco-row__value">~ ' + euro(e.ersparnis.von) + ' – ' + euro(e.ersparnis.bis) + ' / Jahr</span>' +
       '</div>';
+    }
+    if (e.invest) {
+      rows += '<div class="eco-row">' +
+        '<span class="eco-row__label">Typische Investition (Gerät + Einbau)</span>' +
+        '<span class="eco-row__value">' + euro(e.invest.von) + ' – ' + euro(e.invest.bis) +
+          ' <em>· abzgl. Förderung</em></span>' +
+      '</div>';
+    }
+    if (!rows) return '';
+    return '<div class="result__eco">' +
+      '<h3>Wirtschaftlichkeit <span class="legend-opt">(grobe Schätzung)</span></h3>' +
+      rows +
+      '<p class="assumptions">Annahmen: Gas/Öl 0,11 €/kWh, Wärmepumpen-Strom 0,28 €/kWh, Direktstrom 0,35 €/kWh. ' +
+        'Reale Kosten und Förderung hängen von Tarif, Gebäude und Ausführung ab und werden im Angebot konkretisiert.</p>' +
+    '</div>';
   }
 
   function metric(iconId, label, value) {
