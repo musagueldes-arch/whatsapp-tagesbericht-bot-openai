@@ -38,10 +38,13 @@ Beide speichern die Anfrage unter `reports/` und benachrichtigen per WhatsApp
 (`KUNDENDIENST_NOTIFY_NUMBER` bzw. `WAERMEPUMPE_NOTIFY_NUMBER`; mit Fallback).
 Die berechneten Werte des Konfigurators sind eine unverbindliche Orientierung.
 
-Die Bildflächen (Hero, Leistungen, Referenzen) sind aktuell als gestaltete
-Farbflächen umgesetzt und funktionieren ohne Fotos. Echte Projektfotos lassen sich
-später einbinden, indem die jeweiligen `.scard__media--*` / `.gitem--*` Flächen in
-`public/styles.css` mit einem `background-image` versehen werden.
+### Echte Fotos einbinden
+
+Die Bildflächen (Hero, „Unternehmen", Leistungen, Referenzen) sind foto-fähig: Jede Fläche
+zeigt einen gestalteten Marken-Farbverlauf als Fallback und blendet automatisch ein Foto ein,
+sobald die passende Datei in `public/images/` liegt. Die erwarteten Dateinamen und Größen
+stehen in `public/images/README.md`. Es ist kein Code-Eingriff nötig — nur die Bilddateien
+mit den richtigen Namen ablegen.
 
 ## Einrichtung
 

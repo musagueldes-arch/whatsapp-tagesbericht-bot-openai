@@ -144,11 +144,14 @@ p { margin: 0 0 1rem; }
 .hero__media { position: relative; display: grid; gap: 18px; }
 .hero__panel { border-radius: var(--radius-lg); border: 1px solid rgba(255,255,255,.16); }
 .hero__panel--photo {
+  --img: none; /* echtes Foto via style="--img:url('images/hero.jpg')" – sonst Verlauf */
   aspect-ratio: 4 / 3; position: relative; box-shadow: var(--shadow-lg);
-  background:
+  background-image:
+    var(--img),
     linear-gradient(150deg, rgba(217,89,31,.28), transparent 55%),
     repeating-linear-gradient(135deg, rgba(255,255,255,.05) 0 14px, rgba(255,255,255,0) 14px 28px),
     linear-gradient(150deg, #17466a, #0c3450);
+  background-size: cover; background-position: center; background-repeat: no-repeat;
 }
 .hero__panel--photo::after {
   content: ""; position: absolute; inset: 0; border-radius: inherit;
@@ -193,16 +196,17 @@ p { margin: 0 0 1rem; }
   transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
 }
 .scard:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); border-color: #c9d7e0; }
-.scard__media { position: relative; aspect-ratio: 16 / 9; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-.scard__media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(160deg, rgba(255,255,255,.16), transparent 60%); }
-.scard__watermark { width: 74px; height: 74px; color: rgba(255,255,255,.9); stroke-width: 1.4; opacity: .95; }
-.scard__media--heizung  { background: linear-gradient(150deg, #e0662a, #b83f13); }
-.scard__media--sanitaer { background: linear-gradient(150deg, #1c88b8, #0f5c86); }
-.scard__media--bad      { background: linear-gradient(150deg, #2aa5a0, #16746f); }
-.scard__media--waerme   { background: linear-gradient(150deg, #4f9d54, #2f7a3a); }
-.scard__media--klima    { background: linear-gradient(150deg, #3fb4d6, #1c6a99); }
-.scard__media--wartung  { background: linear-gradient(150deg, #385a75, #22384a); }
-.scard__media--notdienst{ background: linear-gradient(150deg, #e0a12a, #c06a12); }
+/* --img via style="--img:url('images/leistung-x.jpg')" – sonst Verlauf */
+.scard__media { --img: none; position: relative; aspect-ratio: 16 / 9; display: flex; align-items: center; justify-content: center; overflow: hidden; background-size: cover; background-position: center; background-repeat: no-repeat; }
+.scard__media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(160deg, rgba(0,0,0,.05), transparent 45%, rgba(8,30,46,.35)); }
+.scard__watermark { position: relative; z-index: 1; width: 74px; height: 74px; color: rgba(255,255,255,.95); stroke-width: 1.4; opacity: .9; filter: drop-shadow(0 2px 6px rgba(0,0,0,.35)); }
+.scard__media--heizung  { background-image: var(--img), linear-gradient(150deg, #e0662a, #b83f13); }
+.scard__media--sanitaer { background-image: var(--img), linear-gradient(150deg, #1c88b8, #0f5c86); }
+.scard__media--bad      { background-image: var(--img), linear-gradient(150deg, #2aa5a0, #16746f); }
+.scard__media--waerme   { background-image: var(--img), linear-gradient(150deg, #4f9d54, #2f7a3a); }
+.scard__media--klima    { background-image: var(--img), linear-gradient(150deg, #3fb4d6, #1c6a99); }
+.scard__media--wartung  { background-image: var(--img), linear-gradient(150deg, #385a75, #22384a); }
+.scard__media--notdienst{ background-image: var(--img), linear-gradient(150deg, #e0a12a, #c06a12); }
 .scard__body { padding: 24px; display: flex; flex-direction: column; flex: 1; }
 .scard__body h3 { margin-bottom: .35em; }
 .scard__body p { color: var(--muted); font-size: .98rem; margin: 0 0 16px; }
@@ -214,11 +218,14 @@ p { margin: 0 0 1rem; }
 /* Warum wir -------------------------------------------------------------- */
 .warum__inner { display: grid; grid-template-columns: .9fr 1.1fr; gap: 52px; align-items: center; }
 .warum__photo {
+  --img: none; /* Foto via style="--img:url('images/team-werkstatt.jpg')" – sonst Verlauf */
   aspect-ratio: 4 / 5; border-radius: var(--radius-lg); position: relative; box-shadow: var(--shadow-md);
-  background:
+  background-image:
+    var(--img),
     linear-gradient(160deg, rgba(217,89,31,.22), transparent 50%),
     repeating-linear-gradient(135deg, rgba(255,255,255,.06) 0 16px, rgba(255,255,255,0) 16px 32px),
     linear-gradient(160deg, #16466a, #0c3450);
+  background-size: cover; background-position: center; background-repeat: no-repeat;
 }
 .warum__photo-badge { position: absolute; left: 18px; bottom: 16px; color: #fff; font-weight: 800; background: rgba(10,44,66,.55); border: 1px solid rgba(255,255,255,.2); padding: 7px 14px; border-radius: 999px; font-size: .85rem; }
 .warum__text p { color: var(--muted); font-size: 1.06rem; }
@@ -240,17 +247,19 @@ p { margin: 0 0 1rem; }
 
 /* Referenzen gallery ----------------------------------------------------- */
 .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+/* --img via style="--img:url('images/referenz-x.jpg')" – sonst Verlauf */
 .gitem {
-  position: relative; margin: 0; aspect-ratio: 4 / 3; border-radius: var(--radius); overflow: hidden;
+  --img: none; position: relative; margin: 0; aspect-ratio: 4 / 3; border-radius: var(--radius); overflow: hidden;
   box-shadow: var(--shadow-sm); border: 1px solid var(--line);
+  background-size: cover; background-position: center; background-repeat: no-repeat;
 }
 .gitem::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 45%, rgba(8,30,46,.72)); z-index: 1; }
-.gitem--a { background: linear-gradient(150deg, #2aa5a0, #16746f); }
-.gitem--b { background: linear-gradient(150deg, #e0662a, #b83f13); }
-.gitem--c { background: linear-gradient(150deg, #4f9d54, #2f7a3a); }
-.gitem--d { background: linear-gradient(150deg, #1c88b8, #0f5c86); }
-.gitem--e { background: linear-gradient(150deg, #385a75, #22384a); }
-.gitem--f { background: linear-gradient(150deg, #e0a12a, #c06a12); }
+.gitem--a { background-image: var(--img), linear-gradient(150deg, #2aa5a0, #16746f); }
+.gitem--b { background-image: var(--img), linear-gradient(150deg, #e0662a, #b83f13); }
+.gitem--c { background-image: var(--img), linear-gradient(150deg, #4f9d54, #2f7a3a); }
+.gitem--d { background-image: var(--img), linear-gradient(150deg, #1c88b8, #0f5c86); }
+.gitem--e { background-image: var(--img), linear-gradient(150deg, #385a75, #22384a); }
+.gitem--f { background-image: var(--img), linear-gradient(150deg, #e0a12a, #c06a12); }
 .gitem figcaption { position: absolute; left: 16px; bottom: 14px; z-index: 2; color: #fff; font-weight: 700; font-size: .95rem; text-shadow: 0 1px 6px rgba(0,0,0,.35); }
 .gallery__note { text-align: center; color: var(--muted); font-size: .9rem; margin-top: 20px; font-style: italic; }
 
