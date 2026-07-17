@@ -20,9 +20,13 @@
         </span>
         <span class="brand__text"><strong>G-Therm</strong> Haustechnik</span>
       </a>
-      <nav class="nav" aria-label="Hauptnavigation">
+      <button class="nav-toggle" aria-expanded="false" aria-controls="nav" aria-label="Menü öffnen"><span></span><span></span><span></span></button>
+      <nav class="nav" id="nav" aria-label="Hauptnavigation">
         <a href="index.html#leistungen">Leistungen</a>
+        <a href="index.html#unternehmen">Unternehmen</a>
+        <a href="index.html#jobs">Jobs</a>
         <a href="index.html#kontakt">Kontakt</a>
+        <a class="btn btn--primary nav__cta" href="kundendienst.html">Kundendienst-Anfrage</a>
       </nav>
     </div>
   </header>
@@ -80,9 +84,43 @@
   </main>
 
   <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <span class="brand brand--footer"><span class="brand__text"><strong>G-Therm</strong> Haustechnik</span></span>
+        <p>Ihr Meisterbetrieb für Heizung, Sanitär und Bad in Bochum und im Ruhrgebiet.</p>
+      </div>
+      <div class="footer__col">
+        <h4>Leistungen</h4>
+        <ul>
+          <li><a href="index.html#leistungen">Wärmepumpen</a></li>
+          <li><a href="index.html#leistungen">Heizsysteme</a></li>
+          <li><a href="index.html#leistungen">Klimatechnik</a></li>
+          <li><a href="index.html#leistungen">Sanitär</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h4>Unternehmen</h4>
+        <ul>
+          <li><a href="index.html#unternehmen">Über uns</a></li>
+          <li><a href="index.html#jobs">Jobs / Karriere</a></li>
+          <li><a href="kundendienst.html">Kundendienst</a></li>
+          <li><a href="impressum.html">Impressum</a></li>
+          <li><a href="datenschutz.html">Datenschutz</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h4>Kontakt</h4>
+        <ul>
+          <li><a href="tel:+4923454461855">0234 - 544 618 55</a></li>
+          <li><a href="mailto:info@g-therm-haustechnik.de">info@g-therm-haustechnik.de</a></li>
+          <li>Lindener Str. 111</li>
+          <li>44879 Bochum</li>
+        </ul>
+      </div>
+    </div>
     <div class="footer__bottom">
       <div class="container footer__bottom-inner">
-        <span>© 2026 G-Therm Haustechnik · Inh. Musa Güldes</span>
+        <span>© <span id="year">2026</span> G-Therm Haustechnik · Inh. Musa Güldes</span>
         <span class="footer__links">
           <a href="impressum.html">Impressum</a>
           <a href="datenschutz.html">Datenschutz</a>
@@ -90,5 +128,7 @@
       </div>
     </div>
   </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>

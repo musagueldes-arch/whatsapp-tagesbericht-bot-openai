@@ -345,6 +345,51 @@ async function handleHeizreportWebhook(payload) {
   await sendText(notify, '📄 Neuer Heizreport empfangen und als PDF erstellt.');
 }
 
+// ── Kundendienst-Anfrage (3-Schritte-Formular der Website) ─────────────────
+app.post('/api/kundendienst', (req, res) => {
+  const data = req.body || {};
+  if (!data.beschreibung || !data.name || !data.telefon) {
+    return res.status(400).json({ error: 'Pflichtfelder fehlen (Beschreibung, Name, Telefon).' });
+  }
+  res.json({ ok: true });
+  handleKundendienst(data).catch(err => console.error('Kundendienst-Fehler:', err));
+});
+
+async function handleKundendienst(data) {
+  const stamp = Date.now();
+  const dir = path.join(REPORTS_DIR, `kundendienst_${stamp}`);
+  let fotoCount = 0;
+  try {
+    fs.mkdirSync(dir, { recursive: true });
+    const { fotos = [], ...meta } = data;
+    fs.writeFileSync(path.join(dir, 'anfrage.json'), JSON.stringify(meta, null, 2));
+    fotos.forEach((durl, i) => {
+      const m = /^data:(image\/\w+);base64,(.+)$/s.exec(durl || '');
+      if (!m) return;
+      const ext = m[1].split('/')[1].replace('jpeg', 'jpg');
+      fs.writeFileSync(path.join(dir, `foto_${i + 1}.${ext}`), Buffer.from(m[2], 'base64'));
+      fotoCount++;
+    });
+  } catch (e) { console.error('Kundendienst-Anfrage konnte nicht gespeichert werden:', e); }
+
+  const notify = process.env.KUNDENDIENST_NOTIFY_NUMBER || process.env.HEIZREPORT_NOTIFY_NUMBER;
+  if (!notify) {
+    console.warn('KUNDENDIENST_NOTIFY_NUMBER nicht gesetzt – Anfrage gespeichert, aber keine WhatsApp-Benachrichtigung.');
+    return;
+  }
+  const txt =
+    `🔧 *Neue Kundendienst-Anfrage*${data.notfall ? ' ⚠️ NOTFALL' : ''}\n\n` +
+    `*Bereich:* ${data.kategorie || '-'}\n` +
+    `*Kundentyp:* ${data.kundentyp || '-'}\n` +
+    `*Name:* ${data.name}\n*Telefon:* ${data.telefon}\n` +
+    (data.email ? `*E-Mail:* ${data.email}\n` : '') +
+    ((data.plz || data.ort) ? `*Ort:* ${(data.plz || '').trim()} ${(data.ort || '').trim()}\n` : '') +
+    `*Erreichbar:* ${data.rueckruf || '-'}\n\n` +
+    `*Beschreibung:*\n${data.beschreibung}\n\n` +
+    `${fotoCount} Foto(s) · gespeichert unter ${path.basename(dir)}`;
+  await sendText(notify, txt);
+}
+
 app.get('/health', (req, res) => res.json({ ok: true, service: 'whatsapp-tagesbericht-bot-openai' }));
 
 if (require.main === module) app.listen(PORT, () => console.log(`OpenAI Bot läuft auf Port ${PORT}`));

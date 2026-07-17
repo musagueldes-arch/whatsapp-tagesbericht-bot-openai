@@ -132,6 +132,13 @@
       <symbol id="i-star" viewBox="0 0 24 24">
         <path d="m12 3 2.6 5.4 5.9.8-4.3 4.1 1 5.9L12 22l-5.2-2.8 1-5.9-4.3-4.1 5.9-.8z"/>
       </symbol>
+      <symbol id="i-snow" viewBox="0 0 24 24">
+        <path d="M12 2v20M4.2 7l15.6 10M19.8 7 4.2 17"/>
+        <path d="M12 2 9.6 4.4M12 2l2.4 2.4M12 22l-2.4-2.4M12 22l2.4-2.4M4.2 7l.1 3.3M4.2 7l3.2-.9M19.8 17l-.1-3.3M19.8 17l-3.2.9M19.8 7l-3.2-.9M19.8 7l-.1 3.3M4.2 17l3.2.9M4.2 17l.1-3.3"/>
+      </symbol>
+      <symbol id="i-check" viewBox="0 0 24 24">
+        <path d="M20 6 9 17l-5-5"/>
+      </symbol>
     </defs>
   </svg>
 
@@ -165,11 +172,10 @@
 
       <nav class="nav" id="nav" aria-label="Hauptnavigation">
         <a href="#leistungen">Leistungen</a>
-        <a href="#warum">Warum wir</a>
-        <a href="#ablauf">Ablauf</a>
-        <a href="#referenzen">Referenzen</a>
+        <a href="#unternehmen">Unternehmen</a>
+        <a href="#jobs">Jobs</a>
         <a href="#kontakt">Kontakt</a>
-        <a class="btn btn--primary nav__cta" href="#kontakt">Angebot anfordern</a>
+        <a class="btn btn--primary nav__cta" href="kundendienst.html">Kundendienst-Anfrage</a>
       </nav>
     </div>
   </header>
@@ -232,6 +238,28 @@
       </div>
     </section>
 
+    <!-- Quick-Access -->
+    <div class="container">
+      <div class="quick">
+        <a class="qcard" href="#kontakt">
+          <span class="qcard__icon qcard__icon--heat"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-leaf"/></svg></span>
+          <span>
+            <h3>Wärmepumpen-Angebot</h3>
+            <p>Kostenlos & unverbindlich anfragen</p>
+          </span>
+          <svg class="ico qcard__arrow" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg>
+        </a>
+        <a class="qcard" href="kundendienst.html">
+          <span class="qcard__icon qcard__icon--service"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-wrench"/></svg></span>
+          <span>
+            <h3>Störung melden</h3>
+            <p>Kundendienst-Anfrage in 3 Schritten</p>
+          </span>
+          <svg class="ico qcard__arrow" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg>
+        </a>
+      </div>
+    </div>
+
     <!-- Leistungen -->
     <section class="section" id="leistungen">
       <div class="container">
@@ -241,36 +269,37 @@
           <p class="section__sub">Von der klassischen Heizungswartung bis zur kompletten Badsanierung — Planung, Ausführung und Service aus einer Hand.</p>
         </div>
 
+        <p class="section__sub" style="text-align:center;max-width:640px;margin:-32px auto 40px">Für Privat- und Gewerbekunden im gesamten Ruhrgebiet.</p>
         <div class="grid grid--cards">
-          <article class="scard reveal">
-            <div class="scard__media scard__media--heizung"><svg class="scard__watermark" aria-hidden="true" focusable="false"><use href="#i-flame"/></svg></div>
-            <div class="scard__body">
-              <h3>Heizung</h3>
-              <p>Installation, Modernisierung und Wartung — effizient heizen und Energiekosten senken.</p>
-              <a class="scard__link" href="#kontakt">Mehr erfahren <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></a>
-            </div>
-          </article>
-          <article class="scard reveal">
-            <div class="scard__media scard__media--sanitaer"><svg class="scard__watermark" aria-hidden="true" focusable="false"><use href="#i-drop"/></svg></div>
-            <div class="scard__body">
-              <h3>Sanitär</h3>
-              <p>Wasser, Abwasser und Armaturen — fachgerecht installiert und dauerhaft dicht.</p>
-              <a class="scard__link" href="#kontakt">Mehr erfahren <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></a>
-            </div>
-          </article>
-          <article class="scard reveal">
-            <div class="scard__media scard__media--bad"><svg class="scard__watermark" aria-hidden="true" focusable="false"><use href="#i-tub"/></svg></div>
-            <div class="scard__body">
-              <h3>Bäder & Sanierung</h3>
-              <p>Ihr neues Bad aus einer Hand: Planung, Fliesen, Sanitär und Elektrik koordiniert.</p>
-              <a class="scard__link" href="#kontakt">Mehr erfahren <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></a>
-            </div>
-          </article>
           <article class="scard reveal">
             <div class="scard__media scard__media--waerme"><svg class="scard__watermark" aria-hidden="true" focusable="false"><use href="#i-leaf"/></svg></div>
             <div class="scard__body">
-              <h3>Wärmepumpen & Erneuerbare</h3>
-              <p>Zukunftssicher heizen mit moderner Technik. Wir beraten zu Fördermöglichkeiten.</p>
+              <h3>Wärmepumpen</h3>
+              <p>Umweltfreundlich heizen mit moderner Technik — inkl. Beratung zu Fördermöglichkeiten.</p>
+              <a class="scard__link" href="#kontakt">Mehr erfahren <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></a>
+            </div>
+          </article>
+          <article class="scard reveal">
+            <div class="scard__media scard__media--heizung"><svg class="scard__watermark" aria-hidden="true" focusable="false"><use href="#i-flame"/></svg></div>
+            <div class="scard__body">
+              <h3>Heizsysteme</h3>
+              <p>Installation und Modernisierung von Heizungsanlagen — effizient und zukunftssicher.</p>
+              <a class="scard__link" href="#kontakt">Mehr erfahren <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></a>
+            </div>
+          </article>
+          <article class="scard reveal">
+            <div class="scard__media scard__media--klima"><svg class="scard__watermark" aria-hidden="true" focusable="false"><use href="#i-snow"/></svg></div>
+            <div class="scard__body">
+              <h3>Klimatechnik</h3>
+              <p>Angenehmes Raumklima im Sommer wie im Winter — Planung, Einbau und Wartung.</p>
+              <a class="scard__link" href="#kontakt">Mehr erfahren <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></a>
+            </div>
+          </article>
+          <article class="scard reveal">
+            <div class="scard__media scard__media--bad"><svg class="scard__watermark" aria-hidden="true" focusable="false"><use href="#i-drop"/></svg></div>
+            <div class="scard__body">
+              <h3>Sanitär & Bad</h3>
+              <p>Von der Reparatur bis zur kompletten Badsanierung — fachgerecht und aus einer Hand.</p>
               <a class="scard__link" href="#kontakt">Mehr erfahren <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></a>
             </div>
           </article>
@@ -285,23 +314,23 @@
           <article class="scard reveal">
             <div class="scard__media scard__media--notdienst"><svg class="scard__watermark" aria-hidden="true" focusable="false"><use href="#i-bolt"/></svg></div>
             <div class="scard__body">
-              <h3>Schnelle Reparaturen</h3>
-              <p>Defekte werden zügig erkannt und behoben — kurze Wege, faire Preise.</p>
-              <a class="scard__link" href="#kontakt">Mehr erfahren <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></a>
+              <h3>Notdienst</h3>
+              <p>Heizungsausfall oder Wasserschaden? Wir sind im Störfall schnell für Sie da.</p>
+              <a class="scard__link" href="kundendienst.html">Störung melden <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></a>
             </div>
           </article>
         </div>
       </div>
     </section>
 
-    <!-- Warum wir -->
-    <section class="section section--muted" id="warum">
+    <!-- Unternehmen / Warum wir -->
+    <section class="section section--muted" id="unternehmen">
       <div class="container warum__inner">
         <div class="warum__media reveal" aria-hidden="true">
           <div class="warum__photo"><span class="warum__photo-badge">Handwerk aus Bochum</span></div>
         </div>
         <div class="warum__text reveal">
-          <p class="eyebrow">Warum G-Therm</p>
+          <p class="eyebrow">Unternehmen · Warum G-Therm</p>
           <h2>Handwerk mit Handschlag-Qualität</h2>
           <p>
             Als regionaler Fachbetrieb aus Bochum stehen wir unter der Leitung von
@@ -372,6 +401,28 @@
           <figure class="gitem gitem--f reveal"><figcaption>Wartung · Ruhrgebiet</figcaption></figure>
         </div>
         <p class="gallery__note">Platzhalter-Kacheln — hier kommen später echte Projektfotos hinein.</p>
+      </div>
+    </section>
+
+    <!-- Jobs / Karriere -->
+    <section class="section" id="jobs">
+      <div class="container">
+        <div class="jobs jobs__inner reveal">
+          <div>
+            <p class="eyebrow eyebrow--light">Jobs & Karriere</p>
+            <h2>Werde Teil des G-Therm-Teams</h2>
+            <p>Wir suchen zuverlässige Verstärkung im Handwerk — mit fairer Bezahlung, modernem Werkzeug und einem eingespielten Team in Bochum.</p>
+            <ul class="jobs__list">
+              <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-check"/></svg> Anlagenmechaniker/in SHK (m/w/d)</li>
+              <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-check"/></svg> Monteur/in Heizung & Sanitär (m/w/d)</li>
+              <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-check"/></svg> Auszubildende & Quereinsteiger willkommen</li>
+            </ul>
+          </div>
+          <div class="jobs__cta">
+            <a class="btn btn--accent btn--lg" href="mailto:info@g-therm-haustechnik.de?subject=Bewerbung%20bei%20G-Therm%20Haustechnik">Jetzt bewerben <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></a>
+            <a class="btn btn--outline-light btn--lg" href="tel:+4923454461855"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-phone"/></svg> Fragen? Anrufen</a>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -477,9 +528,9 @@
       <div class="footer__col">
         <h4>Unternehmen</h4>
         <ul>
-          <li><a href="#warum">Über uns</a></li>
-          <li><a href="#referenzen">Referenzen</a></li>
-          <li><a href="#kontakt">Kontakt</a></li>
+          <li><a href="#unternehmen">Über uns</a></li>
+          <li><a href="#jobs">Jobs / Karriere</a></li>
+          <li><a href="kundendienst.html">Kundendienst</a></li>
           <li><a href="impressum.html">Impressum</a></li>
           <li><a href="datenschutz.html">Datenschutz</a></li>
         </ul>
