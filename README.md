@@ -28,6 +28,16 @@ http://localhost:3000/
 Impressum und Datenschutzerklärung enthalten Platzhalter (z. B. E-Mail, USt-IdNr.,
 Handwerkskammer), die vor Veröffentlichung mit den korrekten Angaben zu befüllen sind.
 
+Interaktive Seiten:
+
+- `kundendienst.html` – Störungsmeldung in 3 Schritten (→ `POST /api/kundendienst`)
+- `waermepumpe.html` – Wärmepumpen-Konfigurator mit Sofort-Orientierung
+  (Heizlast/Empfehlung) und Angebotsanfrage (→ `POST /api/waermepumpe`)
+
+Beide speichern die Anfrage unter `reports/` und benachrichtigen per WhatsApp
+(`KUNDENDIENST_NOTIFY_NUMBER` bzw. `WAERMEPUMPE_NOTIFY_NUMBER`; mit Fallback).
+Die berechneten Werte des Konfigurators sind eine unverbindliche Orientierung.
+
 Die Bildflächen (Hero, Leistungen, Referenzen) sind aktuell als gestaltete
 Farbflächen umgesetzt und funktionieren ohne Fotos. Echte Projektfotos lassen sich
 später einbinden, indem die jeweiligen `.scard__media--*` / `.gitem--*` Flächen in

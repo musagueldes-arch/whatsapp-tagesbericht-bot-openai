@@ -390,6 +390,41 @@ async function handleKundendienst(data) {
   await sendText(notify, txt);
 }
 
+// ── Wärmepumpen-Konfigurator (Angebotsanfrage der Website) ─────────────────
+app.post('/api/waermepumpe', (req, res) => {
+  const d = req.body || {};
+  if (!d.name || !d.telefon) {
+    return res.status(400).json({ error: 'Pflichtfelder fehlen (Name, Telefon).' });
+  }
+  res.json({ ok: true });
+  handleWaermepumpe(d).catch(err => console.error('Wärmepumpen-Anfrage-Fehler:', err));
+});
+
+async function handleWaermepumpe(d) {
+  const stamp = Date.now();
+  try {
+    fs.writeFileSync(path.join(REPORTS_DIR, `waermepumpe_${stamp}.json`), JSON.stringify(d, null, 2));
+  } catch (e) { console.error('Wärmepumpen-Anfrage konnte nicht gespeichert werden:', e); }
+
+  const notify = process.env.WAERMEPUMPE_NOTIFY_NUMBER || process.env.KUNDENDIENST_NOTIFY_NUMBER || process.env.HEIZREPORT_NOTIFY_NUMBER;
+  if (!notify) {
+    console.warn('WAERMEPUMPE_NOTIFY_NUMBER nicht gesetzt – Anfrage gespeichert, aber keine WhatsApp-Benachrichtigung.');
+    return;
+  }
+  const e = d.ergebnis || {};
+  const inp = d.eingaben || {};
+  const txt =
+    `🌡️ *Neue Wärmepumpen-Anfrage*\n\n` +
+    `*Name:* ${d.name}\n*Telefon:* ${d.telefon}\n` +
+    (d.email ? `*E-Mail:* ${d.email}\n` : '') +
+    ((d.plz || d.ort) ? `*Ort:* ${(d.plz || '').trim()} ${(d.ort || '').trim()}\n` : '') +
+    `\n*Gebäude:* ${inp.gebaeudetyp || '-'} · ${inp.flaeche || '-'} m² · ${inp.sanierung || '-'}\n` +
+    `*Aktuell:* ${inp.aktuell || '-'} · ${inp.verteilung || '-'}\n` +
+    `*Geschätzte Heizlast:* ${e.heizlast != null ? e.heizlast + ' kW' : '-'}\n` +
+    `*Empfehlung:* ${e.typ || '-'}`;
+  await sendText(notify, txt);
+}
+
 app.get('/health', (req, res) => res.json({ ok: true, service: 'whatsapp-tagesbericht-bot-openai' }));
 
 if (require.main === module) app.listen(PORT, () => console.log(`OpenAI Bot läuft auf Port ${PORT}`));

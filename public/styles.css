@@ -377,6 +377,30 @@ p { margin: 0 0 1rem; }
 .kd__success h2 { margin-bottom: .4em; }
 .kd__success p { color: var(--muted); margin-bottom: 22px; }
 
+/* Wärmepumpen-Konfigurator: Optionskarten & Ergebnis --------------------- */
+.optgrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.optcard { position: relative; }
+.optcard input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+.optcard__box { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; padding: 18px 12px; border: 1.5px solid var(--line); border-radius: var(--radius); font-weight: 600; color: var(--muted); transition: .15s; cursor: pointer; height: 100%; }
+.optcard__box .ico { width: 30px; height: 30px; color: var(--steel); transition: color .15s; }
+.optcard input:checked + .optcard__box { border-color: var(--copper); background: #fff5ef; color: var(--copper-600); }
+.optcard input:checked + .optcard__box .ico { color: var(--copper); }
+.optcard input:focus-visible + .optcard__box { outline: 3px solid var(--amber); outline-offset: 2px; }
+
+.result__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 20px; }
+.metric { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 18px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--mist); }
+.metric__icon { width: 42px; height: 42px; border-radius: 11px; background: #fff; color: var(--steel); display: flex; align-items: center; justify-content: center; margin-bottom: 4px; border: 1px solid var(--line); }
+.metric__icon .ico { width: 22px; height: 22px; }
+.metric__value { font-size: 1.35rem; font-weight: 800; color: var(--navy-900); font-variant-numeric: tabular-nums; }
+.metric__label { font-size: .85rem; color: var(--muted); }
+.result__reco { background: linear-gradient(150deg, var(--steel-100), #fff); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; }
+.result__reco h3 { color: var(--navy-900); margin-bottom: .3em; }
+.result__reco p { color: var(--muted); margin: 0 0 10px; }
+.result__foerder { display: flex; gap: 10px; align-items: flex-start; background: #fff5ef; border: 1px solid #f2d3c0; border-radius: 10px; padding: 12px 14px; color: var(--copper-600) !important; font-weight: 500; margin: 12px 0 0 !important; }
+.result__foerder .ico { color: var(--copper); width: 20px; height: 20px; flex: none; margin-top: 2px; }
+.result__note { color: var(--muted); font-size: .85rem; font-style: italic; margin-top: 16px; }
+@media (max-width: 520px) { .optgrid, .result__grid { grid-template-columns: 1fr; } }
+
 /* Quick-Access & Jobs (Startseite) --------------------------------------- */
 .quick { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: -30px; position: relative; z-index: 2; }
 .qcard { display: flex; align-items: center; gap: 18px; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 22px 24px; box-shadow: var(--shadow-md); transition: transform .18s ease, box-shadow .2s ease; }
