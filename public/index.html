@@ -16,14 +16,55 @@
 <body>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
 
+  <!-- Icon sprite (line-art) -->
+  <svg width="0" height="0" class="sprite" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="i-flame" viewBox="0 0 24 24">
+        <path d="M12 2.5c3 4 5.5 6 5.5 9.5a5.5 5.5 0 0 1-11 0c0-1.6.6-3 1.7-4.2"/>
+        <path d="M12 20a2.6 2.6 0 0 0 2.6-2.6c0-1.4-1.1-2.4-2.6-3.9-1.5 1.5-2.6 2.5-2.6 3.9A2.6 2.6 0 0 0 12 20z"/>
+      </symbol>
+      <symbol id="i-drop" viewBox="0 0 24 24">
+        <path d="M12 3.2s6 6.4 6 10.8a6 6 0 0 1-12 0c0-4.4 6-10.8 6-10.8z"/>
+        <path d="M9.5 14.2a2.5 2.5 0 0 0 2.2 2.3"/>
+      </symbol>
+      <symbol id="i-tub" viewBox="0 0 24 24">
+        <path d="M4 12.5h16"/>
+        <path d="M5 12.5v2.5A3.5 3.5 0 0 0 8.5 18.5h7a3.5 3.5 0 0 0 3.5-3.5v-2.5"/>
+        <path d="M7 12.5V7.4A2.2 2.2 0 0 1 9.2 5.2a2.1 2.1 0 0 1 1.9 1.2"/>
+        <path d="M7.6 18.5 6.7 20.4M16.4 18.5l.9 1.9"/>
+      </symbol>
+      <symbol id="i-leaf" viewBox="0 0 24 24">
+        <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10z"/>
+        <path d="M2 22c1.5-9 5-13 10-15"/>
+      </symbol>
+      <symbol id="i-wrench" viewBox="0 0 24 24">
+        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+      </symbol>
+      <symbol id="i-bolt" viewBox="0 0 24 24">
+        <path d="M13 2 3 14h9l-1 8 10-12h-9z"/>
+      </symbol>
+      <symbol id="i-phone" viewBox="0 0 24 24">
+        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.81.36 1.6.7 2.34a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.74.34 1.53.57 2.34.7A2 2 0 0 1 22 16.92z"/>
+      </symbol>
+      <symbol id="i-pin" viewBox="0 0 24 24">
+        <path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0z"/>
+        <circle cx="12" cy="10" r="3"/>
+      </symbol>
+      <symbol id="i-clock" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9"/>
+        <path d="M12 7.5V12l3 1.8"/>
+      </symbol>
+    </defs>
+  </svg>
+
   <!-- Top bar -->
   <div class="topbar">
     <div class="container topbar__inner">
-      <span class="topbar__item">📍 Lindener Str. 111 · 44879 Bochum</span>
+      <span class="topbar__item"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-pin"/></svg> Lindener Str. 111 · 44879 Bochum</span>
       <span class="topbar__sep" aria-hidden="true">·</span>
-      <a class="topbar__item" href="tel:+4923454461855">📞 0234 - 544 618 55</a>
+      <a class="topbar__item" href="tel:+4923454461855"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-phone"/></svg> 0234 - 544 618 55</a>
       <span class="topbar__sep" aria-hidden="true">·</span>
-      <span class="topbar__item topbar__hours">Mo–Fr 8:00–17:00 Uhr</span>
+      <span class="topbar__item topbar__hours"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-clock"/></svg> Mo–Fr 8:00–17:00 Uhr</span>
     </div>
   </div>
 
@@ -69,7 +110,7 @@
           </p>
           <div class="hero__actions">
             <a class="btn btn--primary btn--lg" href="#kontakt">Kostenloses Angebot anfordern</a>
-            <a class="btn btn--ghost btn--lg" href="tel:+4923454461855">📞 0234 - 544 618 55</a>
+            <a class="btn btn--ghost btn--lg" href="tel:+4923454461855"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-phone"/></svg> 0234 - 544 618 55</a>
           </div>
           <ul class="hero__badges">
             <li>✓ Meisterqualität</li>
@@ -79,7 +120,7 @@
         </div>
         <div class="hero__aside" aria-hidden="true">
           <div class="hero__card">
-            <div class="hero__card-icon">🔧</div>
+            <div class="hero__card-icon"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-wrench"/></svg></div>
             <div>
               <strong>Schnelle Hilfe nötig?</strong>
               <p>Heizung ausgefallen oder Rohrbruch? Rufen Sie uns direkt an — wir sind für Sie da.</p>
@@ -101,32 +142,32 @@
 
         <div class="grid grid--cards">
           <article class="card">
-            <div class="card__icon">🔥</div>
+            <div class="card__icon"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-flame"/></svg></div>
             <h3>Heizung</h3>
             <p>Installation, Modernisierung und Wartung von Heizungsanlagen. Effizient heizen, Energiekosten senken.</p>
           </article>
           <article class="card">
-            <div class="card__icon">🚿</div>
+            <div class="card__icon"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-drop"/></svg></div>
             <h3>Sanitär</h3>
             <p>Wasser, Abwasser und Armaturen — fachgerecht installiert und dauerhaft dicht. Auch bei Störungen schnell zur Stelle.</p>
           </article>
           <article class="card">
-            <div class="card__icon">🛁</div>
+            <div class="card__icon"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-tub"/></svg></div>
             <h3>Bäder & Sanierung</h3>
             <p>Ihr neues Bad aus einer Hand: Planung, Fliesen, Sanitär und Elektrik koordiniert und termintreu umgesetzt.</p>
           </article>
           <article class="card">
-            <div class="card__icon">♻️</div>
+            <div class="card__icon"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-leaf"/></svg></div>
             <h3>Wärmepumpen & Erneuerbare</h3>
             <p>Zukunftssicher heizen mit Wärmepumpe und moderner Technik. Wir beraten zu Fördermöglichkeiten.</p>
           </article>
           <article class="card">
-            <div class="card__icon">🛠️</div>
+            <div class="card__icon"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-wrench"/></svg></div>
             <h3>Wartung & Kundendienst</h3>
             <p>Regelmäßige Wartung verlängert die Lebensdauer Ihrer Anlage und beugt teuren Ausfällen vor.</p>
           </article>
           <article class="card">
-            <div class="card__icon">⚡</div>
+            <div class="card__icon"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-bolt"/></svg></div>
             <h3>Schnelle Reparaturen</h3>
             <p>Defekte werden zügig erkannt und behoben — kurze Wege, feste Ansprechpartner, faire Preise.</p>
           </article>
@@ -217,21 +258,21 @@
 
           <ul class="contact-list">
             <li>
-              <span class="contact-list__icon">📞</span>
+              <span class="contact-list__icon"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-phone"/></svg></span>
               <div>
                 <span class="contact-list__label">Telefon</span>
                 <a href="tel:+4923454461855">0234 - 544 618 55</a>
               </div>
             </li>
             <li>
-              <span class="contact-list__icon">📍</span>
+              <span class="contact-list__icon"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-pin"/></svg></span>
               <div>
                 <span class="contact-list__label">Adresse</span>
                 <span>Lindener Str. 111<br>44879 Bochum</span>
               </div>
             </li>
             <li>
-              <span class="contact-list__icon">🕒</span>
+              <span class="contact-list__icon"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-clock"/></svg></span>
               <div>
                 <span class="contact-list__label">Öffnungszeiten</span>
                 <span>Mo–Fr 8:00–17:00 Uhr</span>
@@ -328,7 +369,7 @@
     </div>
   </footer>
 
-  <a class="fab" href="tel:+4923454461855" aria-label="G-Therm Haustechnik anrufen">📞</a>
+  <a class="fab" href="tel:+4923454461855" aria-label="G-Therm Haustechnik anrufen"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-phone"/></svg></a>
 
   <script src="script.js"></script>
 </body>
