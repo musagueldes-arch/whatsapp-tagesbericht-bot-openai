@@ -13,6 +13,20 @@ Dein altes Repository wird dadurch nicht verändert.
 - PDF-Erstellung im G-Therm-Layout
 - PDF per WhatsApp zurücksenden
 - Lokale Speicherung im Ordner `reports/`
+- Firmen-Website (statisch) unter `/`
+
+## Firmen-Website
+
+Im Ordner `public/` liegt die statische Firmen-Website von G-Therm Haustechnik
+(Startseite, Leistungen, Über uns, Kontakt sowie Impressum und Datenschutz).
+Der Express-Server liefert sie unter der Wurzel-URL aus:
+
+```text
+http://localhost:3000/
+```
+
+Impressum und Datenschutzerklärung enthalten Platzhalter (z. B. E-Mail, USt-IdNr.,
+Handwerkskammer), die vor Veröffentlichung mit den korrekten Angaben zu befüllen sind.
 
 ## Einrichtung
 

@@ -14,6 +14,8 @@ const { safeName } = require('./lib/util');
 const app = express();
 app.use(express.json({ limit: '25mb' }));
 app.use('/app', express.static(path.join(__dirname, 'public/app')));
+// Firmen-Website (statisch) unter / ausliefern
+app.use(express.static(path.join(__dirname, 'public')));
 
 const PORT = process.env.PORT || 3000;
 const VERIFY_TOKEN = process.env.WHATSAPP_VERIFY_TOKEN || 'changeme';
