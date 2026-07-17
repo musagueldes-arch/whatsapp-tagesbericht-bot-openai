@@ -422,7 +422,8 @@ async function handleWaermepumpe(d) {
     `*Aktuell:* ${inp.aktuell || '-'} · ${inp.verteilung || '-'}\n` +
     `*Geschätzte Heizlast:* ${e.heizlast != null ? e.heizlast + ' kW' : '-'}\n` +
     `*Empfehlung:* ${e.typ || '-'}` +
-    (e.ersparnis ? `\n*Geschätzte Ersparnis:* ~ ${e.ersparnis.von}–${e.ersparnis.bis} €/Jahr ggü. ${e.ersparnis.system}` : '');
+    (e.ersparnis ? `\n*Geschätzte Ersparnis:* ~ ${e.ersparnis.von}–${e.ersparnis.bis} €/Jahr ggü. ${e.ersparnis.system}` : '') +
+    (e.co2 && e.co2.kg ? `\n*CO₂-Einsparung:* ~ ${e.co2.kg} kg/Jahr` : '');
   await sendText(notify, txt);
 }
 

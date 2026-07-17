@@ -53,6 +53,8 @@
   var KWH_PRO_M2 = { neubau: 45, saniert: 90, teilsaniert: 130, unsaniert: 180 };
   // Angenommene Energiepreise (€/kWh) – leicht anpassbar
   var PREISE = { gas: 0.11, oel: 0.11, stromDirekt: 0.35, wpStrom: 0.28 };
+  // CO₂-Emissionsfaktoren (kg CO₂ / kWh Endenergie) – leicht anpassbar
+  var EMISSION = { gas: 0.201, oel: 0.266, strom: 0.38 };
 
   function estimate(d) {
     var flaeche = Math.max(20, Math.min(2000, Number(d.flaeche) || 0));
@@ -88,6 +90,14 @@
       ersparnis = { von: roundTo(diff * 0.85, 50), bis: roundTo(diff * 1.15, 50), system: altSystem };
     }
 
+    // CO₂-Einsparung (kg/Jahr) gegenüber dem bisherigen System
+    var wpCo2 = strom * EMISSION.strom;
+    var altCo2 = null;
+    if (d.aktuell === 'Gas') altCo2 = (jahresWaerme / 0.90) * EMISSION.gas;
+    else if (d.aktuell === 'Öl') altCo2 = (jahresWaerme / 0.85) * EMISSION.oel;
+    else if (d.aktuell === 'Strom/Nachtspeicher') altCo2 = jahresWaerme * EMISSION.strom;
+    var co2 = altCo2 != null ? { kg: roundTo(Math.max(0, altCo2 - wpCo2), 50), system: altSystem } : null;
+
     // Grober Investitionsrahmen nur für Ein-/Zweifamilienhäuser
     var invest = null;
     if (d.gebaeudetyp === 'Einfamilienhaus' || d.gebaeudetyp === 'Doppel-/Reihenhaus') {
@@ -105,12 +115,18 @@
       wpStromKosten: wpStromKosten,
       altKosten: altKosten,
       ersparnis: ersparnis,
-      invest: invest
+      invest: invest,
+      co2: co2
     };
   }
 
   function roundTo(v, step) { return Math.round(v / step) * step; }
   function euro(n) { return n.toLocaleString('de-DE') + ' €'; }
+  function co2Text(kg) {
+    return kg >= 1000
+      ? (kg / 1000).toLocaleString('de-DE', { maximumFractionDigits: 1 }) + ' t'
+      : kg.toLocaleString('de-DE') + ' kg';
+  }
 
   function fmt(n) { return n.toLocaleString('de-DE'); }
 
@@ -159,12 +175,20 @@
           ' <em>· abzgl. Förderung</em></span>' +
       '</div>';
     }
-    if (!rows) return '';
+    var co2 = '';
+    if (e.co2 && e.co2.kg > 0) {
+      co2 = '<div class="eco-co2">' +
+        '<span class="eco-co2__icon"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-leaf"/></svg></span>' +
+        '<span><strong>ca. ' + co2Text(e.co2.kg) + ' weniger CO₂</strong> pro Jahr gegenüber ' + e.co2.system + '</span>' +
+      '</div>';
+    }
+    if (!rows && !co2) return '';
     return '<div class="result__eco">' +
-      '<h3>Wirtschaftlichkeit <span class="legend-opt">(grobe Schätzung)</span></h3>' +
-      rows +
-      '<p class="assumptions">Annahmen: Gas/Öl 0,11 €/kWh, Wärmepumpen-Strom 0,28 €/kWh, Direktstrom 0,35 €/kWh. ' +
-        'Reale Kosten und Förderung hängen von Tarif, Gebäude und Ausführung ab und werden im Angebot konkretisiert.</p>' +
+      '<h3>Wirtschaftlichkeit &amp; Umwelt <span class="legend-opt">(grobe Schätzung)</span></h3>' +
+      co2 + rows +
+      '<p class="assumptions">Annahmen: Gas/Öl 0,11 €/kWh, Wärmepumpen-Strom 0,28 €/kWh, Direktstrom 0,35 €/kWh; ' +
+        'CO₂-Faktoren Erdgas 0,20 · Heizöl 0,27 · Strom 0,38 kg/kWh. ' +
+        'Reale Kosten, CO₂ und Förderung hängen von Tarif, Gebäude und Ausführung ab und werden im Angebot konkretisiert.</p>' +
     '</div>';
   }
 

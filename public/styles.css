@@ -401,6 +401,10 @@ p { margin: 0 0 1rem; }
 .result__eco { margin-top: 16px; border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; background: #fff; }
 .result__eco h3 { color: var(--navy-900); margin-bottom: 12px; }
 .eco-row { display: flex; justify-content: space-between; align-items: baseline; gap: 14px; flex-wrap: wrap; padding: 10px 0; border-top: 1px solid var(--line); }
+.eco-co2 { display: flex; align-items: center; gap: 12px; padding: 14px 16px; margin: 0 0 14px; border-radius: 10px; background: #e9f6ec; border: 1px solid #bfe4c8; color: #1f6b3a; }
+.eco-co2__icon { width: 40px; height: 40px; border-radius: 10px; background: #fff; color: #2f9d54; display: flex; align-items: center; justify-content: center; flex: none; }
+.eco-co2__icon .ico { width: 22px; height: 22px; }
+.eco-co2 strong { color: #14612f; }
 .eco-row:first-of-type { border-top: 0; }
 .eco-row__label { color: var(--muted); font-size: .95rem; }
 .eco-row__value { font-weight: 800; color: var(--navy-900); font-variant-numeric: tabular-nums; text-align: right; }
