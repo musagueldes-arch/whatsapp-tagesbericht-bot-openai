@@ -10,9 +10,10 @@ const { generateAuftragPdfBuffer } = require('./lib/auftrag');
 const { sendText, uploadMedia, sendDocument, downloadMedia } = require('./lib/whatsapp');
 const { transcribeAudio } = require('./lib/transcribe');
 const { safeName } = require('./lib/util');
+const { verifyHeizreportAuth, mapHeizreportToReport } = require('./lib/heizreport');
 
 const app = express();
-app.use(express.json({ limit: '25mb' }));
+app.use(express.json({ limit: '25mb', verify: (req, _res, buf) => { req.rawBody = buf; } }));
 app.use('/app', express.static(path.join(__dirname, 'public/app')));
 // Firmen-Website (statisch) unter / ausliefern
 app.use(express.static(path.join(__dirname, 'public')));
@@ -305,6 +306,44 @@ app.post('/sign/:token', async (req, res) => {
     await sendText(data.from, '✅ Kunde hat unterschrieben. Unterschriebenes PDF gesendet.');
   } catch (err) { console.error('Unterschrift-Fehler:', err); }
 });
+
+// ── Heizreport-Integration ────────────────────────────────────────────────
+// Webhook-Adresse für Heizreport:  https://DEINE-DOMAIN/heizreport/webhook
+// Das in Heizreport hinterlegte "Webhook Auth" muss mit HEIZREPORT_WEBHOOK_AUTH
+// (aus der .env) übereinstimmen.
+app.post('/heizreport/webhook', (req, res) => {
+  if (!verifyHeizreportAuth(req)) return res.status(401).json({ error: 'unauthorized' });
+  res.sendStatus(200);
+  handleHeizreportWebhook(req.body).catch(err => console.error('Heizreport-Webhook-Fehler:', err));
+});
+
+async function handleHeizreportWebhook(payload) {
+  // Rohdaten immer sichern, damit nichts verloren geht (auch wenn das Mapping noch nicht passt)
+  try {
+    const stamp = String(payload?.id || payload?.report_id || Date.now()).replace(/\W/g, '');
+    fs.writeFileSync(path.join(REPORTS_DIR, `heizreport_${stamp}.json`), JSON.stringify(payload, null, 2));
+  } catch (e) { console.error('Heizreport-Rohdaten konnten nicht gespeichert werden:', e); }
+
+  const report = mapHeizreportToReport(payload);
+  if (!report) {
+    console.warn('Heizreport-Payload nicht auswertbar – nur Rohdaten gespeichert. Feld-Mapping in lib/heizreport.js prüfen.');
+    return;
+  }
+  report.fotos = report.fotos || [];
+
+  const notify = process.env.HEIZREPORT_NOTIFY_NUMBER;
+  if (!notify) {
+    console.warn('HEIZREPORT_NOTIFY_NUMBER nicht gesetzt – Heizreport gespeichert, aber kein WhatsApp-Versand.');
+    return;
+  }
+
+  const pdfBuffer = await generateReportPdfBuffer(report, company);
+  const filename = `Heizreport_${safeName(report.kunde)}_${(report.datum || '').replace(/\./g, '-')}.pdf`;
+  fs.writeFileSync(path.join(REPORTS_DIR, filename), pdfBuffer);
+  const mediaId = await uploadMedia(pdfBuffer, filename, 'application/pdf');
+  await sendDocument(notify, mediaId, filename, `Heizreport: ${report.kunde || ''} – ${report.datum || ''}`.trim());
+  await sendText(notify, '📄 Neuer Heizreport empfangen und als PDF erstellt.');
+}
 
 app.get('/health', (req, res) => res.json({ ok: true, service: 'whatsapp-tagesbericht-bot-openai' }));
 
