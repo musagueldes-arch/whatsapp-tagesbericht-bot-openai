@@ -2,7 +2,7 @@ name: Deploy website to GitHub Pages
 
 on:
   push:
-    branches: [claude/website-6lsiap]
+    branches: [main, claude/website-6lsiap]
   workflow_dispatch:
 
 permissions:
