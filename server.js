@@ -4,16 +4,32 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 
-const { extractReports, extractAuftragFromText } = require('./lib/openai');
-const { generateReportPdfBuffer } = require('./lib/pdf');
-const { generateAuftragPdfBuffer } = require('./lib/auftrag');
-const { sendText, uploadMedia, sendDocument, downloadMedia } = require('./lib/whatsapp');
-const { transcribeAudio } = require('./lib/transcribe');
-const { safeName } = require('./lib/util');
+// Optionale Bot-Module: fehlt eines, startet der Server trotzdem und liefert die
+// Website aus – die zugehörigen WhatsApp-/PDF-Funktionen sind dann deaktiviert und
+// aktivieren sich automatisch, sobald die Module unter lib/ vorhanden sind.
+function optionalModule(modulePath, stubs) {
+  try {
+    return require(modulePath);
+  } catch (err) {
+    console.warn(`⚠️  ${modulePath} nicht geladen (${err.code || err.message}). Website läuft; zugehörige Bot-Funktionen sind deaktiviert.`);
+    return stubs;
+  }
+}
+const unavailable = (name) => async () => { throw new Error(`Funktion "${name}" nicht verfügbar – Bot-Modul unter lib/ fehlt.`); };
+
+const { extractReports, extractAuftragFromText } = optionalModule('./lib/openai', { extractReports: unavailable('extractReports'), extractAuftragFromText: unavailable('extractAuftragFromText') });
+const { generateReportPdfBuffer } = optionalModule('./lib/pdf', { generateReportPdfBuffer: unavailable('generateReportPdfBuffer') });
+const { generateAuftragPdfBuffer } = optionalModule('./lib/auftrag', { generateAuftragPdfBuffer: unavailable('generateAuftragPdfBuffer') });
+const { sendText, uploadMedia, sendDocument, downloadMedia } = optionalModule('./lib/whatsapp', { sendText: unavailable('sendText'), uploadMedia: unavailable('uploadMedia'), sendDocument: unavailable('sendDocument'), downloadMedia: unavailable('downloadMedia') });
+const { transcribeAudio } = optionalModule('./lib/transcribe', { transcribeAudio: unavailable('transcribeAudio') });
+const { safeName } = optionalModule('./lib/util', { safeName: (s) => String(s || 'Datei').replace(/[^\w.-]+/g, '_').slice(0, 80) || 'Datei' });
+const { verifyHeizreportAuth, mapHeizreportToReport } = require('./lib/heizreport');
 
 const app = express();
-app.use(express.json({ limit: '25mb' }));
+app.use(express.json({ limit: '25mb', verify: (req, _res, buf) => { req.rawBody = buf; } }));
 app.use('/app', express.static(path.join(__dirname, 'public/app')));
+// Firmen-Website (statisch) unter / ausliefern
+app.use(express.static(path.join(__dirname, 'public')));
 
 const PORT = process.env.PORT || 3000;
 const VERIFY_TOKEN = process.env.WHATSAPP_VERIFY_TOKEN || 'changeme';
@@ -303,6 +319,126 @@ app.post('/sign/:token', async (req, res) => {
     await sendText(data.from, '✅ Kunde hat unterschrieben. Unterschriebenes PDF gesendet.');
   } catch (err) { console.error('Unterschrift-Fehler:', err); }
 });
+
+// ── Heizreport-Integration ────────────────────────────────────────────────
+// Webhook-Adresse für Heizreport:  https://DEINE-DOMAIN/heizreport/webhook
+// Das in Heizreport hinterlegte "Webhook Auth" muss mit HEIZREPORT_WEBHOOK_AUTH
+// (aus der .env) übereinstimmen.
+app.post('/heizreport/webhook', (req, res) => {
+  if (!verifyHeizreportAuth(req)) return res.status(401).json({ error: 'unauthorized' });
+  res.sendStatus(200);
+  handleHeizreportWebhook(req.body).catch(err => console.error('Heizreport-Webhook-Fehler:', err));
+});
+
+async function handleHeizreportWebhook(payload) {
+  // Rohdaten immer sichern, damit nichts verloren geht (auch wenn das Mapping noch nicht passt)
+  try {
+    const stamp = String(payload?.id || payload?.report_id || Date.now()).replace(/\W/g, '');
+    fs.writeFileSync(path.join(REPORTS_DIR, `heizreport_${stamp}.json`), JSON.stringify(payload, null, 2));
+  } catch (e) { console.error('Heizreport-Rohdaten konnten nicht gespeichert werden:', e); }
+
+  const report = mapHeizreportToReport(payload);
+  if (!report) {
+    console.warn('Heizreport-Payload nicht auswertbar – nur Rohdaten gespeichert. Feld-Mapping in lib/heizreport.js prüfen.');
+    return;
+  }
+  report.fotos = report.fotos || [];
+
+  const notify = process.env.HEIZREPORT_NOTIFY_NUMBER;
+  if (!notify) {
+    console.warn('HEIZREPORT_NOTIFY_NUMBER nicht gesetzt – Heizreport gespeichert, aber kein WhatsApp-Versand.');
+    return;
+  }
+
+  const pdfBuffer = await generateReportPdfBuffer(report, company);
+  const filename = `Heizreport_${safeName(report.kunde)}_${(report.datum || '').replace(/\./g, '-')}.pdf`;
+  fs.writeFileSync(path.join(REPORTS_DIR, filename), pdfBuffer);
+  const mediaId = await uploadMedia(pdfBuffer, filename, 'application/pdf');
+  await sendDocument(notify, mediaId, filename, `Heizreport: ${report.kunde || ''} – ${report.datum || ''}`.trim());
+  await sendText(notify, '📄 Neuer Heizreport empfangen und als PDF erstellt.');
+}
+
+// ── Kundendienst-Anfrage (3-Schritte-Formular der Website) ─────────────────
+app.post('/api/kundendienst', (req, res) => {
+  const data = req.body || {};
+  if (!data.beschreibung || !data.name || !data.telefon) {
+    return res.status(400).json({ error: 'Pflichtfelder fehlen (Beschreibung, Name, Telefon).' });
+  }
+  res.json({ ok: true });
+  handleKundendienst(data).catch(err => console.error('Kundendienst-Fehler:', err));
+});
+
+async function handleKundendienst(data) {
+  const stamp = Date.now();
+  const dir = path.join(REPORTS_DIR, `kundendienst_${stamp}`);
+  let fotoCount = 0;
+  try {
+    fs.mkdirSync(dir, { recursive: true });
+    const { fotos = [], ...meta } = data;
+    fs.writeFileSync(path.join(dir, 'anfrage.json'), JSON.stringify(meta, null, 2));
+    fotos.forEach((durl, i) => {
+      const m = /^data:(image\/\w+);base64,(.+)$/s.exec(durl || '');
+      if (!m) return;
+      const ext = m[1].split('/')[1].replace('jpeg', 'jpg');
+      fs.writeFileSync(path.join(dir, `foto_${i + 1}.${ext}`), Buffer.from(m[2], 'base64'));
+      fotoCount++;
+    });
+  } catch (e) { console.error('Kundendienst-Anfrage konnte nicht gespeichert werden:', e); }
+
+  const notify = process.env.KUNDENDIENST_NOTIFY_NUMBER || process.env.HEIZREPORT_NOTIFY_NUMBER;
+  if (!notify) {
+    console.warn('KUNDENDIENST_NOTIFY_NUMBER nicht gesetzt – Anfrage gespeichert, aber keine WhatsApp-Benachrichtigung.');
+    return;
+  }
+  const txt =
+    `🔧 *Neue Kundendienst-Anfrage*${data.notfall ? ' ⚠️ NOTFALL' : ''}\n\n` +
+    `*Bereich:* ${data.kategorie || '-'}\n` +
+    `*Kundentyp:* ${data.kundentyp || '-'}\n` +
+    `*Name:* ${data.name}\n*Telefon:* ${data.telefon}\n` +
+    (data.email ? `*E-Mail:* ${data.email}\n` : '') +
+    ((data.plz || data.ort) ? `*Ort:* ${(data.plz || '').trim()} ${(data.ort || '').trim()}\n` : '') +
+    `*Erreichbar:* ${data.rueckruf || '-'}\n\n` +
+    `*Beschreibung:*\n${data.beschreibung}\n\n` +
+    `${fotoCount} Foto(s) · gespeichert unter ${path.basename(dir)}`;
+  await sendText(notify, txt);
+}
+
+// ── Wärmepumpen-Konfigurator (Angebotsanfrage der Website) ─────────────────
+app.post('/api/waermepumpe', (req, res) => {
+  const d = req.body || {};
+  if (!d.name || !d.telefon) {
+    return res.status(400).json({ error: 'Pflichtfelder fehlen (Name, Telefon).' });
+  }
+  res.json({ ok: true });
+  handleWaermepumpe(d).catch(err => console.error('Wärmepumpen-Anfrage-Fehler:', err));
+});
+
+async function handleWaermepumpe(d) {
+  const stamp = Date.now();
+  try {
+    fs.writeFileSync(path.join(REPORTS_DIR, `waermepumpe_${stamp}.json`), JSON.stringify(d, null, 2));
+  } catch (e) { console.error('Wärmepumpen-Anfrage konnte nicht gespeichert werden:', e); }
+
+  const notify = process.env.WAERMEPUMPE_NOTIFY_NUMBER || process.env.KUNDENDIENST_NOTIFY_NUMBER || process.env.HEIZREPORT_NOTIFY_NUMBER;
+  if (!notify) {
+    console.warn('WAERMEPUMPE_NOTIFY_NUMBER nicht gesetzt – Anfrage gespeichert, aber keine WhatsApp-Benachrichtigung.');
+    return;
+  }
+  const e = d.ergebnis || {};
+  const inp = d.eingaben || {};
+  const txt =
+    `🌡️ *Neue Wärmepumpen-Anfrage*\n\n` +
+    `*Name:* ${d.name}\n*Telefon:* ${d.telefon}\n` +
+    (d.email ? `*E-Mail:* ${d.email}\n` : '') +
+    ((d.plz || d.ort) ? `*Ort:* ${(d.plz || '').trim()} ${(d.ort || '').trim()}\n` : '') +
+    `\n*Gebäude:* ${inp.gebaeudetyp || '-'} · ${inp.flaeche || '-'} m² · ${inp.sanierung || '-'}\n` +
+    `*Aktuell:* ${inp.aktuell || '-'} · ${inp.verteilung || '-'}\n` +
+    `*Geschätzte Heizlast:* ${e.heizlast != null ? e.heizlast + ' kW' : '-'}\n` +
+    `*Empfehlung:* ${e.typ || '-'}` +
+    (e.ersparnis ? `\n*Geschätzte Ersparnis:* ~ ${e.ersparnis.von}–${e.ersparnis.bis} €/Jahr ggü. ${e.ersparnis.system}` : '') +
+    (e.co2 && e.co2.kg ? `\n*CO₂-Einsparung:* ~ ${e.co2.kg} kg/Jahr` : '');
+  await sendText(notify, txt);
+}
 
 app.get('/health', (req, res) => res.json({ ok: true, service: 'whatsapp-tagesbericht-bot-openai' }));
 
