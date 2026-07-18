@@ -4,12 +4,25 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 
-const { extractReports, extractAuftragFromText } = require('./lib/openai');
-const { generateReportPdfBuffer } = require('./lib/pdf');
-const { generateAuftragPdfBuffer } = require('./lib/auftrag');
-const { sendText, uploadMedia, sendDocument, downloadMedia } = require('./lib/whatsapp');
-const { transcribeAudio } = require('./lib/transcribe');
-const { safeName } = require('./lib/util');
+// Optionale Bot-Module: fehlt eines, startet der Server trotzdem und liefert die
+// Website aus – die zugehörigen WhatsApp-/PDF-Funktionen sind dann deaktiviert und
+// aktivieren sich automatisch, sobald die Module unter lib/ vorhanden sind.
+function optionalModule(modulePath, stubs) {
+  try {
+    return require(modulePath);
+  } catch (err) {
+    console.warn(`⚠️  ${modulePath} nicht geladen (${err.code || err.message}). Website läuft; zugehörige Bot-Funktionen sind deaktiviert.`);
+    return stubs;
+  }
+}
+const unavailable = (name) => async () => { throw new Error(`Funktion "${name}" nicht verfügbar – Bot-Modul unter lib/ fehlt.`); };
+
+const { extractReports, extractAuftragFromText } = optionalModule('./lib/openai', { extractReports: unavailable('extractReports'), extractAuftragFromText: unavailable('extractAuftragFromText') });
+const { generateReportPdfBuffer } = optionalModule('./lib/pdf', { generateReportPdfBuffer: unavailable('generateReportPdfBuffer') });
+const { generateAuftragPdfBuffer } = optionalModule('./lib/auftrag', { generateAuftragPdfBuffer: unavailable('generateAuftragPdfBuffer') });
+const { sendText, uploadMedia, sendDocument, downloadMedia } = optionalModule('./lib/whatsapp', { sendText: unavailable('sendText'), uploadMedia: unavailable('uploadMedia'), sendDocument: unavailable('sendDocument'), downloadMedia: unavailable('downloadMedia') });
+const { transcribeAudio } = optionalModule('./lib/transcribe', { transcribeAudio: unavailable('transcribeAudio') });
+const { safeName } = optionalModule('./lib/util', { safeName: (s) => String(s || 'Datei').replace(/[^\w.-]+/g, '_').slice(0, 80) || 'Datei' });
 const { verifyHeizreportAuth, mapHeizreportToReport } = require('./lib/heizreport');
 
 const app = express();
