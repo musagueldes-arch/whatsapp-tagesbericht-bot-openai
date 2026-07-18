@@ -771,6 +771,92 @@
     }
   });
 
+  // ── Angebot vorbereiten (preisfreier Export) ────────────────────────────────
+  function buildExport() {
+    var raeume = state.rooms.map(function (r) {
+      var l = roomLoadKW(r);
+      return { name: r.name || 'Raum', flaecheM2: Math.round(roomAreaM2(r) * 10) / 10, wm2: r.wm2 || null, heizlastKW: l != null ? Math.round(l * 100) / 100 : null };
+    });
+    var counts = {};
+    state.parts.forEach(function (p) { counts[p.catId] = (counts[p.catId] || 0) + 1; });
+    var geraete = Object.keys(counts).map(function (cid) {
+      var c = CAT_BY_ID[cid];
+      return { name: c.name, anzahl: counts[cid], anschluss: [c.fitting && c.fitting.gewinde, c.fitting && c.fitting.sys].filter(Boolean).join(' · ') };
+    });
+    var mat = {};
+    Object.keys(counts).forEach(function (cid) {
+      var c = CAT_BY_ID[cid];
+      if (!c.anbinde) return;
+      c.anbinde.forEach(function (a) { mat[a.name] = (mat[a.name] || 0) + a.n * counts[cid]; });
+    });
+    var anbinde = Object.keys(mat).map(function (nm) { return { name: nm, menge: mat[nm] }; });
+    var bl = buildingLoadKW();
+
+    var data = {
+      quelle: 'G-Therm Anschluss- & Heizlast-Planer',
+      erstellt: dateStr(),
+      gebaeudeheizlastKW: bl != null ? Math.round(bl * 10) / 10 : null,
+      raeume: raeume, geraete: geraete, anbindematerial: anbinde,
+      hinweis: 'Heizlast überschlägig (W/m²), kein Ersatz für DIN EN 12831. Artikel & Preise im Angebot (das Programm) je Projekt.'
+    };
+
+    var L = [];
+    L.push('G-Therm · Anschlussplan-Stückliste (' + data.erstellt + ')');
+    L.push('');
+    if (raeume.length) {
+      L.push('RÄUME');
+      raeume.forEach(function (r) {
+        L.push('- ' + r.name + ': ' + r.flaecheM2.toLocaleString('de-DE') + ' m²' +
+          (r.wm2 ? ' · ' + r.wm2 + ' W/m² · ≈ ' + (r.heizlastKW != null ? r.heizlastKW.toLocaleString('de-DE') + ' kW' : '–') : ' · keine Heizlast'));
+      });
+      L.push('Gebäudeheizlast (überschlägig): ' + (bl != null ? '≈ ' + bl.toLocaleString('de-DE', { maximumFractionDigits: 1 }) + ' kW' : '–'));
+      L.push('');
+    }
+    if (geraete.length) {
+      L.push('GERÄTE / HEIZFLÄCHEN');
+      geraete.forEach(function (g) { L.push('- ' + g.anzahl + '× ' + g.name + (g.anschluss ? ' (' + g.anschluss + ')' : '')); });
+      L.push('');
+    }
+    if (anbinde.length) {
+      L.push('ANBINDEMATERIAL (Profipress / Wavin)');
+      anbinde.forEach(function (a) { L.push('- ' + a.menge + '× ' + a.name); });
+      L.push('');
+    }
+    L.push('Hinweis: ' + data.hinweis);
+    return { text: L.join('\n'), json: data };
+  }
+
+  function flash(msg) {
+    var note = document.getElementById('exportNote');
+    if (!note) return;
+    var prev = note.textContent;
+    note.textContent = msg;
+    note.classList.add('is-ok');
+    setTimeout(function () { note.textContent = prev; note.classList.remove('is-ok'); }, 3500);
+  }
+
+  function exportAngebot() {
+    if (!state.rooms.length && !state.parts.length) { flash('Nichts zu exportieren – erst Räume/Bauteile anlegen.'); return; }
+    var ex = buildExport();
+    // JSON-Datei herunterladen
+    try {
+      var blob = new Blob([JSON.stringify(ex.json, null, 2)], { type: 'application/json' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url; a.download = 'g-therm-stueckliste-' + dateStr().replace(/\./g, '-') + '.json';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+    } catch (e) {}
+    // Text in Zwischenablage
+    var done = function () { flash('Stückliste kopiert & als Datei geladen ✓'); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(ex.text).then(done, function () { flash('Datei geladen ✓ (Kopieren nicht möglich)'); });
+    } else { done(); }
+  }
+
+  var exportBtn = document.getElementById('exportBtn');
+  if (exportBtn) exportBtn.addEventListener('click', exportAngebot);
+
   // ── Init ────────────────────────────────────────────────────────────────────
   buildPalette();
   if (!load()) { seedDemo(); save(); }

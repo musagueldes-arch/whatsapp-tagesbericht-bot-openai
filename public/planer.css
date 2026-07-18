@@ -171,6 +171,11 @@
 .anbinde__n { display: inline-block; min-width: 22px; font-weight: 800; color: var(--steel); }
 .anbinde__hint { font-size: .76rem; color: var(--muted); margin: 8px 0 0; }
 
+.bom__export { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); }
+.btn--block { width: 100%; }
+.bom__export-note { font-size: .76rem; color: var(--muted); margin: 8px 0 0; transition: color .2s; }
+.bom__export-note.is-ok { color: #2ea05a; font-weight: 700; }
+
 .bom__total {
   display: flex; justify-content: space-between; align-items: baseline; gap: 10px;
   margin-top: 12px; padding: 10px 12px; background: var(--navy-900); color: #fff; border-radius: 10px;
