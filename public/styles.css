@@ -312,6 +312,7 @@ p { margin: 0 0 1rem; }
   border: 1px solid var(--line);
   border-radius: 12px;
   color: var(--navy-900);
+  text-decoration: none;
   font-weight: 700;
   font-size: .98rem;
   letter-spacing: .01em;
@@ -319,12 +320,14 @@ p { margin: 0 0 1rem; }
   opacity: .82;
   transition: filter .2s ease, opacity .2s ease, transform .2s ease, box-shadow .2s ease;
 }
-.brand-tile:hover {
+.brand-tile:hover,
+.brand-tile:focus-visible {
   filter: none;
   opacity: 1;
   transform: translateY(-3px);
   box-shadow: 0 14px 30px -20px rgba(10, 44, 66, .5);
 }
+.brand-tile:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
 @media (max-width: 860px) {
   .brands { grid-template-columns: repeat(3, 1fr); }
 }
