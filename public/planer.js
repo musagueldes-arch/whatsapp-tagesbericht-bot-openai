@@ -10,41 +10,55 @@
   // ── Bauteilkatalog ────────────────────────────────────────────────────────
   // Maße als Circa-Werte (Grundfläche B×T und Höhe in m). Höhen der Buderus-
   // Außeneinheiten laut Reihe; vor Aufstellplanung im Datenblatt gegenprüfen.
+  // Anbindematerial nach G-Therm-Standard: Viega Profipress (Kupfer, mm) auf
+  // der Metall-/Heizungsseite, Wavin (¾" Eurokonus) für die Fußbodenheizung.
+  // Dimensionen sind Standard-Annahmen und im Angebot je Projekt zu prüfen.
   var CATALOG = [
     { group: 'Vaillant Wärmepumpe', items: [
       { id: 'arotherm', name: 'aroTHERM plus', sub: 'Außeneinheit · R290',
         kind: 'wp-out', w: 1.10, d: 0.44, h: 0.97, color: '#1c6a99', r290: true,
-        ports: ['VL', 'RL'], fitting: { text: 'auf G 1¼"', gewinde: 'G 1¼"' } },
+        ports: ['VL', 'RL'], fitting: { gewinde: 'G 1¼"', sys: 'Profipress 28' },
+        anbinde: [{ n: 2, name: 'Viega Profipress Übergangsstück 28 × G 1¼" AG' }] },
       { id: 'unitower', name: 'uniTOWER', sub: 'Inneneinheit',
         kind: 'wp-in', w: 0.60, d: 0.69, h: 1.87, color: '#123e5c',
-        ports: ['VL', 'RL'], fitting: { text: 'auf G 1"', gewinde: 'G 1"' } }
+        ports: ['VL', 'RL'], fitting: { gewinde: 'G 1"', sys: 'Profipress 28' },
+        anbinde: [{ n: 2, name: 'Viega Profipress Übergangsstück 28 × G 1" AG' }] }
     ]},
     { group: 'Buderus Wärmepumpe', items: [
       { id: 'wlw186-ar-s', name: 'WLW186i AR 4–7', sub: 'Außeneinheit · R290 · H ca. 0,75 m',
         kind: 'wp-out', w: 1.12, d: 0.46, h: 0.75, color: '#1c6a99', r290: true,
-        ports: ['VL', 'RL'], fitting: { text: 'auf G 1¼"', gewinde: 'G 1¼"' } },
+        ports: ['VL', 'RL'], fitting: { gewinde: 'G 1¼"', sys: 'Profipress 28' },
+        anbinde: [{ n: 2, name: 'Viega Profipress Übergangsstück 28 × G 1¼" AG' }] },
       { id: 'wlw186-ar-l', name: 'WLW186i AR 10/12', sub: 'Außeneinheit · R290 · H ca. 1,08 m',
         kind: 'wp-out', w: 1.12, d: 0.46, h: 1.08, color: '#15577f', r290: true,
-        ports: ['VL', 'RL'], fitting: { text: 'auf G 1¼"', gewinde: 'G 1¼"' } },
+        ports: ['VL', 'RL'], fitting: { gewinde: 'G 1¼"', sys: 'Profipress 35' },
+        anbinde: [{ n: 2, name: 'Viega Profipress Übergangsstück 35 × G 1¼" AG' }] },
       { id: 't180', name: 'Logatherm T180', sub: 'Inneneinheit · 0,60 × 0,60 m · H 1,78 m',
         kind: 'wp-in', w: 0.60, d: 0.60, h: 1.78, color: '#123e5c',
-        ports: ['VL', 'RL'], fitting: { text: 'auf G 1"', gewinde: 'G 1"' } }
+        ports: ['VL', 'RL'], fitting: { gewinde: 'G 1"', sys: 'Profipress 28' },
+        anbinde: [{ n: 2, name: 'Viega Profipress Übergangsstück 28 × G 1" AG' }] }
     ]},
     { group: 'Heizflächen', items: [
-      { id: 'heizkoerper', name: 'Heizkörper', sub: 'Anschluss ½"',
+      { id: 'heizkoerper', name: 'Heizkörper', sub: 'Anschluss ½" · Profipress 15',
         kind: 'emitter-hk', w: 1.00, d: 0.12, h: 0.60, color: '#d9591f',
-        ports: ['VL', 'RL'], fitting: { text: 'auf ½"', gewinde: '½"' } },
-      { id: 'fbh', name: 'FBH-Verteiler', sub: '¾" Eurokonus',
+        ports: ['VL', 'RL'], fitting: { gewinde: '½"', sys: 'Profipress 15' },
+        anbinde: [{ n: 2, name: 'Viega Profipress Übergangsstück 15 × ½" AG' },
+                  { n: 1, name: 'Heizkörper-Anschlussverschraubung ½" (Eck/Durchgang)' }] },
+      { id: 'fbh', name: 'FBH-Verteiler', sub: 'Wavin · ¾" Eurokonus',
         kind: 'emitter-fbh', w: 0.55, d: 0.14, h: 0.45, color: '#f0a12e',
-        ports: ['VL', 'RL'], fitting: { text: 'auf ¾" Eurokonus', gewinde: '¾" Eurokonus' } }
+        ports: ['VL', 'RL'], fitting: { gewinde: '¾" Eurokonus', sys: 'Wavin' },
+        anbinde: [{ n: 2, name: 'Viega Profipress Übergangsstück 28 × 1" AG (Verteileranschluss)' },
+                  { n: 2, name: 'Wavin Kugelhahn-Anschlussset 1" für Verteiler' }],
+        hint: 'Pro Heizkreis zusätzlich Wavin Klemmverschraubung ¾" Eurokonus × 16 mm und Wavin-Rohr 16 × 2 mm.' }
     ]},
     { group: 'Armaturen', items: [
-      { id: 'verschraubung', name: 'Verschraubung', sub: 'Übergang',
+      { id: 'verschraubung', name: 'Verschraubung', sub: 'Profipress-Übergang',
         kind: 'fitting', w: 0.14, d: 0.14, h: 0.14, color: '#8aa0ad',
-        ports: [], fitting: { text: '', gewinde: '' } },
+        ports: [], fitting: { gewinde: '', sys: 'Profipress' } },
       { id: 'pufferspeicher', name: 'Pufferspeicher', sub: 'z. B. 100–200 l',
         kind: 'fitting', w: 0.55, d: 0.55, h: 1.20, color: '#6f8592',
-        ports: ['VL', 'RL'], fitting: { text: 'auf 1"', gewinde: '1"' } }
+        ports: ['VL', 'RL'], fitting: { gewinde: '1"', sys: 'Profipress 35' },
+        anbinde: [{ n: 4, name: 'Viega Profipress Übergangsstück 35 × 1" AG' }] }
     ]}
   ];
 
@@ -509,8 +523,24 @@
         '<span class="props__name">' + c.name + '</span></div>' +
       '<p class="props__meta">' + c.sub + '</p>' +
       '<p class="props__meta">Grundfläche <strong>' + fmtM(sz.w) + ' × ' + fmtM(sz.d) + ' m</strong>, Höhe <strong>' + fmtM(c.h) + ' m</strong></p>';
-    if (c.fitting && c.fitting.gewinde) html += '<p class="props__meta">Anschluss <strong>' + c.fitting.gewinde + '</strong></p>';
+    if (c.fitting && (c.fitting.gewinde || c.fitting.sys)) {
+      var parts = [];
+      if (c.fitting.gewinde) parts.push(c.fitting.gewinde);
+      if (c.fitting.sys) parts.push(c.fitting.sys);
+      html += '<p class="props__meta">Anschluss <strong>' + parts.join(' · ') + '</strong></p>';
+    }
     if (c.r290) html += '<p class="props__meta">⚠︎ Betrieb mit R290 (Propan) – Schutzbereich beachten.</p>';
+
+    // Anbindematerial (Profipress / Wavin)
+    if (c.anbinde && c.anbinde.length) {
+      html += '<div class="anbinde"><div class="anbinde__head">Anbindematerial</div><ul class="anbinde__list">';
+      c.anbinde.forEach(function (a) {
+        html += '<li><span class="anbinde__n">' + a.n + '×</span> ' + a.name + '</li>';
+      });
+      html += '</ul>';
+      if (c.hint) html += '<p class="anbinde__hint">' + c.hint + '</p>';
+      html += '</div>';
+    }
 
     // Heizkörper-/FBH-Schnellauslegung
     if (c.kind === 'emitter-hk' || c.kind === 'emitter-fbh') {
@@ -573,6 +603,13 @@
   }
 
   // ── Stückliste ──────────────────────────────────────────────────────────────
+  function threadCell(c) {
+    var f = c.fitting || {};
+    var g = f.gewinde ? '<span class="bom__thread">' + f.gewinde + '</span>' : '';
+    var s = f.sys ? '<span class="bom__sys">' + f.sys + '</span>' : '';
+    if (!g && !s) return '–';
+    return g + (g && s ? ' · ' : '') + s;
+  }
   function renderBom() {
     var host = document.getElementById('bom');
     var counts = {};
@@ -587,10 +624,27 @@
       html += '<table><thead><tr><th>Bauteil</th><th class="num">Anz.</th><th>Anschluss</th></tr></thead><tbody>';
       ids.forEach(function (cid) {
         var c = CAT_BY_ID[cid];
-        var thread = c.fitting && c.fitting.gewinde ? '<span class="bom__thread">' + c.fitting.gewinde + '</span>' : '–';
-        html += '<tr><td>' + c.name + '</td><td class="num">' + counts[cid] + '×</td><td>' + thread + '</td></tr>';
+        html += '<tr><td>' + c.name + '</td><td class="num">' + counts[cid] + '×</td><td>' + threadCell(c) + '</td></tr>';
       });
       html += '</tbody></table>';
+
+      // Anbindematerial aggregieren (Profipress / Wavin)
+      var mat = {};
+      ids.forEach(function (cid) {
+        var c = CAT_BY_ID[cid];
+        if (!c.anbinde) return;
+        c.anbinde.forEach(function (a) { mat[a.name] = (mat[a.name] || 0) + a.n * counts[cid]; });
+      });
+      var names = Object.keys(mat);
+      if (names.length) {
+        html += '<div class="bom__subhead">Anbindematerial <span>Profipress / Wavin</span></div>';
+        html += '<table><tbody>';
+        names.forEach(function (nm) {
+          html += '<tr><td>' + nm + '</td><td class="num">' + mat[nm] + '×</td></tr>';
+        });
+        html += '</tbody></table>';
+        html += '<p class="bom__foot">Dimensionen sind Standard-Annahmen (Viega Profipress / Wavin) – im Angebot je Projekt prüfen.</p>';
+      }
     }
     var rooms = state.rooms.length;
     var bl = buildingLoadKW();

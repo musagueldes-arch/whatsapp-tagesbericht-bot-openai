@@ -152,6 +152,25 @@
 .bom th { color: var(--muted); font-size: .74rem; text-transform: uppercase; letter-spacing: .04em; }
 .bom td.num, .bom th.num { text-align: right; white-space: nowrap; }
 .bom__thread { color: var(--steel); font-weight: 700; }
+.bom__sys { color: var(--muted); font-size: .78rem; }
+.bom__subhead {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+  margin: 14px 0 4px; font-weight: 800; color: var(--navy-900); font-size: .84rem;
+}
+.bom__subhead span {
+  font-weight: 700; font-size: .68rem; letter-spacing: .04em; text-transform: uppercase;
+  color: var(--steel);
+}
+.bom__foot { font-size: .74rem; color: var(--muted); margin: 6px 0 0; }
+
+/* Anbindematerial im Eigenschaften-Panel */
+.anbinde { margin: 6px 0 10px; padding: 10px 12px; background: var(--mist); border: 1px solid var(--line); border-radius: 10px; }
+.anbinde__head { font-weight: 800; font-size: .82rem; color: var(--navy-900); margin-bottom: 6px; }
+.anbinde__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.anbinde__list li { font-size: .82rem; color: var(--ink); line-height: 1.3; }
+.anbinde__n { display: inline-block; min-width: 22px; font-weight: 800; color: var(--steel); }
+.anbinde__hint { font-size: .76rem; color: var(--muted); margin: 8px 0 0; }
+
 .bom__total {
   display: flex; justify-content: space-between; align-items: baseline; gap: 10px;
   margin-top: 12px; padding: 10px 12px; background: var(--navy-900); color: #fff; border-radius: 10px;
