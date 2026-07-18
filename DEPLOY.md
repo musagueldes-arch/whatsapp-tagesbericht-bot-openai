@@ -27,7 +27,7 @@ Am schnellsten geht es kostenlos über Netlify oder Cloudflare Pages.
 
 ## Eigene Domain
 
-Nach dem ersten Deploy im Hosting-Dashboard die Domain `g-therm-haustechnik.de`
+Nach dem ersten Deploy im Hosting-Dashboard die Domain `g-therm.de`
 verbinden (DNS-Eintrag folgt der Anleitung des Anbieters). Danach passen auch die im
 Code hinterlegten Adressen (`canonical`, Open Graph, `sitemap.xml`).
 

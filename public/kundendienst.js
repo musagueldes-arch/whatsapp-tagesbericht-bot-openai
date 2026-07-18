@@ -143,7 +143,7 @@
       );
       status.className = 'form-status err';
       status.innerHTML = 'Online-Versand momentan nicht möglich. ' +
-        '<a href="mailto:info@g-therm-haustechnik.de?subject=' + subject + '&body=' + body + '">Anfrage per E-Mail senden</a> ' +
+        '<a href="mailto:info@g-therm.de?subject=' + subject + '&body=' + body + '">Anfrage per E-Mail senden</a> ' +
         'oder rufen Sie uns an: <a href="tel:+4923454461855">0234 - 544 618 55</a>.';
     });
   });

@@ -58,7 +58,7 @@
 
       // Fallback: open the user's mail client with a prefilled message.
       // Replace with a real endpoint / mailto address once available.
-      var to = 'info@g-therm-haustechnik.de';
+      var to = 'info@g-therm.de';
       var subject = encodeURIComponent('Anfrage über die Website: ' + data.betreff);
       var body = encodeURIComponent(
         'Name: ' + data.name + '\n' +

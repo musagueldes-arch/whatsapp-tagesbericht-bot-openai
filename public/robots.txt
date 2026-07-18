@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.g-therm-haustechnik.de/sitemap.xml
+Sitemap: https://www.g-therm.de/sitemap.xml
