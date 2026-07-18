@@ -386,6 +386,14 @@ p { margin: 0 0 1rem; }
 .kd__success h2 { margin-bottom: .4em; }
 .kd__success p { color: var(--muted); margin-bottom: 22px; }
 
+/* Wärmepumpen-Check (Heizreport-Widget) ---------------------------------- */
+.wp-check { background: #fff; border: 1px solid var(--line); border-radius: var(--radius-lg); padding: clamp(18px, 3vw, 30px); box-shadow: var(--shadow-md); max-width: 760px; }
+.wp-check__note { color: var(--muted); font-size: .82rem; margin: 16px 0 0; }
+.wp-check__note a { color: var(--steel); text-decoration: underline; }
+.wp-check__fallback { max-width: 760px; margin: 22px 0 0; padding: 18px 20px; border: 1px dashed var(--line); border-radius: var(--radius); background: var(--mist); }
+.wp-check__fallback p { margin: 0 0 12px; color: var(--muted); }
+.wp-check__actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
 /* Wärmepumpen-Konfigurator: Optionskarten & Ergebnis --------------------- */
 .optgrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
 .optcard { position: relative; }
