@@ -10,55 +10,59 @@
   // ── Bauteilkatalog ────────────────────────────────────────────────────────
   // Maße als Circa-Werte (Grundfläche B×T und Höhe in m). Höhen der Buderus-
   // Außeneinheiten laut Reihe; vor Aufstellplanung im Datenblatt gegenprüfen.
-  // Anbindematerial nach G-Therm-Standard: Viega Profipress (Kupfer, mm) auf
-  // der Metall-/Heizungsseite, Wavin (¾" Eurokonus) für die Fußbodenheizung.
-  // Dimensionen sind Standard-Annahmen und im Angebot je Projekt zu prüfen.
+  // Anbindematerial nach G-Therm-Standard: Gewinde-Übergänge als Sanpress
+  // (Rotguss) oder verzinkte Gewindefittings; Rohr je nach Projekt Profipress
+  // (Kupfer) oder Prestabo (Stahl verzinkt) – daher System-Angabe nur als
+  // Dimension. Fußbodenheizung Wavin (¾" Eurokonus). Dimensionen sind
+  // Standard-Annahmen und im Angebot (das Programm) je Projekt zu prüfen.
+  var UEB = 'Gewinde-Übergang'; // Sanpress (Rotguss) o. verzinkt – Auswahl im Angebot
+  var UEB_SUF = ' — Sanpress (Rotguss) o. verzinkt';
   var CATALOG = [
     { group: 'Vaillant Wärmepumpe', items: [
       { id: 'arotherm', name: 'aroTHERM plus', sub: 'Außeneinheit · R290',
         kind: 'wp-out', w: 1.10, d: 0.44, h: 0.97, color: '#1c6a99', r290: true,
-        ports: ['VL', 'RL'], fitting: { gewinde: 'G 1¼"', sys: 'Profipress 28' },
-        anbinde: [{ n: 2, name: 'Viega Profipress Übergangsstück 28 × G 1¼" AG' }] },
+        ports: ['VL', 'RL'], fitting: { gewinde: 'G 1¼"', sys: '28 mm' },
+        anbinde: [{ n: 2, name: UEB + ' 28 × G 1¼" AG' + UEB_SUF }] },
       { id: 'unitower', name: 'uniTOWER', sub: 'Inneneinheit',
         kind: 'wp-in', w: 0.60, d: 0.69, h: 1.87, color: '#123e5c',
-        ports: ['VL', 'RL'], fitting: { gewinde: 'G 1"', sys: 'Profipress 28' },
-        anbinde: [{ n: 2, name: 'Viega Profipress Übergangsstück 28 × G 1" AG' }] }
+        ports: ['VL', 'RL'], fitting: { gewinde: 'G 1"', sys: '28 mm' },
+        anbinde: [{ n: 2, name: UEB + ' 28 × G 1" AG' + UEB_SUF }] }
     ]},
     { group: 'Buderus Wärmepumpe', items: [
       { id: 'wlw186-ar-s', name: 'WLW186i AR 4–7', sub: 'Außeneinheit · R290 · H ca. 0,75 m',
         kind: 'wp-out', w: 1.12, d: 0.46, h: 0.75, color: '#1c6a99', r290: true,
-        ports: ['VL', 'RL'], fitting: { gewinde: 'G 1¼"', sys: 'Profipress 28' },
-        anbinde: [{ n: 2, name: 'Viega Profipress Übergangsstück 28 × G 1¼" AG' }] },
+        ports: ['VL', 'RL'], fitting: { gewinde: 'G 1¼"', sys: '28 mm' },
+        anbinde: [{ n: 2, name: UEB + ' 28 × G 1¼" AG' + UEB_SUF }] },
       { id: 'wlw186-ar-l', name: 'WLW186i AR 10/12', sub: 'Außeneinheit · R290 · H ca. 1,08 m',
         kind: 'wp-out', w: 1.12, d: 0.46, h: 1.08, color: '#15577f', r290: true,
-        ports: ['VL', 'RL'], fitting: { gewinde: 'G 1¼"', sys: 'Profipress 35' },
-        anbinde: [{ n: 2, name: 'Viega Profipress Übergangsstück 35 × G 1¼" AG' }] },
+        ports: ['VL', 'RL'], fitting: { gewinde: 'G 1¼"', sys: '35 mm' },
+        anbinde: [{ n: 2, name: UEB + ' 35 × G 1¼" AG' + UEB_SUF }] },
       { id: 't180', name: 'Logatherm T180', sub: 'Inneneinheit · 0,60 × 0,60 m · H 1,78 m',
         kind: 'wp-in', w: 0.60, d: 0.60, h: 1.78, color: '#123e5c',
-        ports: ['VL', 'RL'], fitting: { gewinde: 'G 1"', sys: 'Profipress 28' },
-        anbinde: [{ n: 2, name: 'Viega Profipress Übergangsstück 28 × G 1" AG' }] }
+        ports: ['VL', 'RL'], fitting: { gewinde: 'G 1"', sys: '28 mm' },
+        anbinde: [{ n: 2, name: UEB + ' 28 × G 1" AG' + UEB_SUF }] }
     ]},
     { group: 'Heizflächen', items: [
-      { id: 'heizkoerper', name: 'Heizkörper', sub: 'Anschluss ½" · Profipress 15',
+      { id: 'heizkoerper', name: 'Heizkörper', sub: 'Anschluss ½" · 15 mm',
         kind: 'emitter-hk', w: 1.00, d: 0.12, h: 0.60, color: '#d9591f',
-        ports: ['VL', 'RL'], fitting: { gewinde: '½"', sys: 'Profipress 15' },
-        anbinde: [{ n: 2, name: 'Viega Profipress Übergangsstück 15 × ½" AG' },
-                  { n: 1, name: 'Heizkörper-Anschlussverschraubung ½" (Eck/Durchgang)' }] },
+        ports: ['VL', 'RL'], fitting: { gewinde: '½"', sys: '15 mm' },
+        anbinde: [{ n: 2, name: UEB + ' 15 × ½" AG' + UEB_SUF },
+                  { n: 1, name: 'Heizkörper-Anschlussverschraubung ½" (verzinkt, Eck/Durchgang)' }] },
       { id: 'fbh', name: 'FBH-Verteiler', sub: 'Wavin · ¾" Eurokonus',
         kind: 'emitter-fbh', w: 0.55, d: 0.14, h: 0.45, color: '#f0a12e',
         ports: ['VL', 'RL'], fitting: { gewinde: '¾" Eurokonus', sys: 'Wavin' },
-        anbinde: [{ n: 2, name: 'Viega Profipress Übergangsstück 28 × 1" AG (Verteileranschluss)' },
+        anbinde: [{ n: 2, name: UEB + ' 28 × 1" AG (Verteileranschluss)' + UEB_SUF },
                   { n: 2, name: 'Wavin Kugelhahn-Anschlussset 1" für Verteiler' }],
         hint: 'Pro Heizkreis zusätzlich Wavin Klemmverschraubung ¾" Eurokonus × 16 mm und Wavin-Rohr 16 × 2 mm.' }
     ]},
     { group: 'Armaturen', items: [
-      { id: 'verschraubung', name: 'Verschraubung', sub: 'Profipress-Übergang',
+      { id: 'verschraubung', name: 'Verschraubung', sub: 'Gewinde-Übergang',
         kind: 'fitting', w: 0.14, d: 0.14, h: 0.14, color: '#8aa0ad',
-        ports: [], fitting: { gewinde: '', sys: 'Profipress' } },
+        ports: [], fitting: { gewinde: '', sys: '' } },
       { id: 'pufferspeicher', name: 'Pufferspeicher', sub: 'z. B. 100–200 l',
         kind: 'fitting', w: 0.55, d: 0.55, h: 1.20, color: '#6f8592',
-        ports: ['VL', 'RL'], fitting: { gewinde: '1"', sys: 'Profipress 35' },
-        anbinde: [{ n: 4, name: 'Viega Profipress Übergangsstück 35 × 1" AG' }] }
+        ports: ['VL', 'RL'], fitting: { gewinde: '1"', sys: '35 mm' },
+        anbinde: [{ n: 4, name: UEB + ' 35 × 1" AG' + UEB_SUF }] }
     ]}
   ];
 
@@ -531,7 +535,7 @@
     }
     if (c.r290) html += '<p class="props__meta">⚠︎ Betrieb mit R290 (Propan) – Schutzbereich beachten.</p>';
 
-    // Anbindematerial (Profipress / Wavin)
+    // Anbindematerial (Sanpress / verzinkt / Wavin)
     if (c.anbinde && c.anbinde.length) {
       html += '<div class="anbinde"><div class="anbinde__head">Anbindematerial</div><ul class="anbinde__list">';
       c.anbinde.forEach(function (a) {
@@ -628,7 +632,7 @@
       });
       html += '</tbody></table>';
 
-      // Anbindematerial aggregieren (Profipress / Wavin)
+      // Anbindematerial aggregieren (Sanpress / verzinkt / Wavin)
       var mat = {};
       ids.forEach(function (cid) {
         var c = CAT_BY_ID[cid];
@@ -637,13 +641,13 @@
       });
       var names = Object.keys(mat);
       if (names.length) {
-        html += '<div class="bom__subhead">Anbindematerial <span>Profipress / Wavin</span></div>';
+        html += '<div class="bom__subhead">Anbindematerial <span>Sanpress · verzinkt · Wavin</span></div>';
         html += '<table><tbody>';
         names.forEach(function (nm) {
           html += '<tr><td>' + nm + '</td><td class="num">' + mat[nm] + '×</td></tr>';
         });
         html += '</tbody></table>';
-        html += '<p class="bom__foot">Dimensionen sind Standard-Annahmen (Viega Profipress / Wavin) – im Angebot je Projekt prüfen.</p>';
+        html += '<p class="bom__foot">Gewinde-Übergänge als Sanpress (Rotguss) oder verzinkt; Dimensionen sind Standard-Annahmen – im Angebot je Projekt prüfen.</p>';
       }
     }
     var rooms = state.rooms.length;
@@ -818,7 +822,7 @@
       L.push('');
     }
     if (anbinde.length) {
-      L.push('ANBINDEMATERIAL (Profipress / Wavin)');
+      L.push('ANBINDEMATERIAL (Sanpress / verzinkt / Wavin)');
       anbinde.forEach(function (a) { L.push('- ' + a.menge + '× ' + a.name); });
       L.push('');
     }
