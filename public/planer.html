@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Anschluss- & Heizlast-Planer | G-Therm Haustechnik</title>
+  <meta name="description" content="Schlanker Anschluss- und Heizlast-Planer von G-Therm: Räume mit überschlägiger Heizlast, Wärmepumpen (Vaillant &amp; Buderus), Heizkörper-Schnellauslegung, Stückliste mit Anschlussgrößen und 3D-Foto fürs Angebot." />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#0a2c42" />
+  <link rel="canonical" href="https://www.g-therm.de/planer.html" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="manifest" href="site.webmanifest" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="planer.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+
+  <!-- Icon sprite -->
+  <svg width="0" height="0" class="sprite" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.81.36 1.6.7 2.34a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.74.34 1.53.57 2.34.7A2 2 0 0 1 22 16.92z"/></symbol>
+      <symbol id="i-pin" viewBox="0 0 24 24"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></symbol>
+      <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 1.8"/></symbol>
+      <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></symbol>
+      <symbol id="i-camera" viewBox="0 0 24 24"><path d="M4 8h3l1.5-2h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.2"/></symbol>
+      <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13"/></symbol>
+      <symbol id="i-rotate" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></symbol>
+    </defs>
+  </svg>
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <div class="container topbar__inner">
+      <span class="topbar__item"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-pin"/></svg> Lindener Str. 111 · 44879 Bochum</span>
+      <span class="topbar__sep" aria-hidden="true">·</span>
+      <a class="topbar__item" href="tel:+4923454461855"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-phone"/></svg> 0234 - 544 618 55</a>
+      <span class="topbar__sep" aria-hidden="true">·</span>
+      <span class="topbar__item topbar__hours"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-clock"/></svg> Mo–Fr 8:00–17:00 Uhr</span>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="header" id="top">
+    <div class="container header__inner">
+      <a class="brand" href="index.html" aria-label="G-Therm Haustechnik Startseite">
+        <span class="brand__mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true">
+            <path d="M16 2c3 5 6 7 6 12a6 6 0 0 1-12 0c0-2 .8-3.6 2-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M13 24c0 2 1.3 3.4 3 3.4S19 26 19 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span class="brand__text"><strong>G-Therm</strong> Haustechnik</span>
+      </a>
+      <button class="nav-toggle" aria-expanded="false" aria-controls="nav" aria-label="Menü öffnen"><span></span><span></span><span></span></button>
+      <nav class="nav" id="nav" aria-label="Hauptnavigation">
+        <a href="index.html#leistungen">Leistungen</a>
+        <a href="waermepumpe.html">Wärmepumpe</a>
+        <a href="index.html#unternehmen">Unternehmen</a>
+        <a href="index.html#kontakt">Kontakt</a>
+        <a class="btn btn--primary nav__cta" href="kundendienst.html">Kundendienst-Anfrage</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="planer">
+    <div class="container">
+      <a class="back" href="index.html"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow-left"/></svg> Zur Startseite</a>
+
+      <div class="planer__head">
+        <p class="eyebrow">Werkzeug für die Vorplanung</p>
+        <h1>Anschluss- &amp; Heizlast-Planer</h1>
+        <p class="planer__intro">
+          Räume aufziehen, überschlägige Heizlast rechnen, Wärmepumpe und Heizflächen platzieren –
+          Stückliste mit Anschlussgrößen und ein 3D-Foto fürs Vorangebot. Läuft komplett im Browser,
+          nichts wird hochgeladen.
+        </p>
+      </div>
+
+      <div class="planer__note" role="note">
+        <strong>Nur Überschlag.</strong> Die Heizlast über W/m² dient der Vorplanung und dem Angebot –
+        sie ersetzt <em>nicht</em> die raumweise Berechnung nach DIN&nbsp;EN&nbsp;12831, die du für
+        BAFA/BEG-Nachweise brauchst. Geräte-Maße sind Circa-Werte; vor der Aufstellplanung im Datenblatt gegenprüfen.
+      </div>
+
+      <div class="planer__app" id="planerApp">
+        <!-- Werkzeuge / Bauteile -->
+        <aside class="planer__side planer__side--left" aria-label="Werkzeuge und Bauteile">
+          <div class="tool-row" role="toolbar" aria-label="Werkzeuge">
+            <button type="button" class="tool is-active" data-tool="select">Auswählen</button>
+            <button type="button" class="tool" data-tool="room">Raum</button>
+          </div>
+
+          <div class="palette" id="palette" aria-label="Bauteile"></div>
+
+          <p class="palette__hint">Bauteil antippen → landet in der Mitte, dann verschieben.
+            Raum: Werkzeug „Raum" wählen und aufziehen.</p>
+        </aside>
+
+        <!-- Zeichenfläche -->
+        <section class="planer__stage" aria-label="Zeichenfläche">
+          <div class="stage-bar">
+            <div class="seg" role="group" aria-label="Ansicht">
+              <button type="button" class="seg__btn is-active" data-view="2d">2D-Grundriss</button>
+              <button type="button" class="seg__btn" data-view="3d">3D-Ansicht</button>
+            </div>
+            <div class="stage-bar__spacer"></div>
+            <label class="chk"><input type="checkbox" id="snapToggle" checked /> Am Raster einrasten</label>
+            <div class="zoom" role="group" aria-label="Zoom">
+              <button type="button" id="zoomOut" aria-label="Verkleinern">–</button>
+              <button type="button" id="zoomFit">Einpassen</button>
+              <button type="button" id="zoomIn" aria-label="Vergrößern">+</button>
+            </div>
+            <button type="button" class="btn btn--accent btn--sm cam-btn" id="photoBtn" hidden>
+              <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-camera"/></svg> Foto
+            </button>
+          </div>
+          <div class="canvas-wrap">
+            <canvas id="planCanvas" width="900" height="620" role="img"
+                    aria-label="Grundriss-Zeichenfläche"></canvas>
+          </div>
+        </section>
+
+        <!-- Eigenschaften + Stückliste -->
+        <aside class="planer__side planer__side--right" aria-label="Eigenschaften und Stückliste">
+          <div class="panel">
+            <h2 class="panel__title">Eigenschaften</h2>
+            <div id="props" class="props">
+              <p class="props__empty">Kein Element ausgewählt. Tippe einen Raum oder ein Bauteil an.</p>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h2 class="panel__title">Stückliste</h2>
+            <div id="bom" class="bom"></div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <span class="brand brand--footer"><span class="brand__text"><strong>G-Therm</strong> Haustechnik</span></span>
+        <p>Ihr Meisterbetrieb für Heizung, Sanitär und Bad in Bochum und im Ruhrgebiet.</p>
+      </div>
+      <div class="footer__col">
+        <h4>Leistungen</h4>
+        <ul>
+          <li><a href="waermepumpe.html">Wärmepumpen</a></li>
+          <li><a href="planer.html">Anschluss-Planer</a></li>
+          <li><a href="index.html#leistungen">Heizsysteme</a></li>
+          <li><a href="index.html#leistungen">Sanitär</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h4>Unternehmen</h4>
+        <ul>
+          <li><a href="index.html#unternehmen">Über uns</a></li>
+          <li><a href="index.html#jobs">Jobs / Karriere</a></li>
+          <li><a href="kundendienst.html">Kundendienst</a></li>
+          <li><a href="impressum.html">Impressum</a></li>
+          <li><a href="datenschutz.html">Datenschutz</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h4>Kontakt</h4>
+        <ul>
+          <li><a href="tel:+4923454461855">0234 - 544 618 55</a></li>
+          <li><a href="mailto:info@g-therm.de">info@g-therm.de</a></li>
+          <li>Lindener Str. 111</li>
+          <li>44879 Bochum</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <div class="container footer__bottom-inner">
+        <span>© <span id="year">2026</span> G-Therm Haustechnik · Inh. Musa Güldes</span>
+        <span class="footer__links"><a href="impressum.html">Impressum</a><a href="datenschutz.html">Datenschutz</a></span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script src="planer.js"></script>
+</body>
+</html>

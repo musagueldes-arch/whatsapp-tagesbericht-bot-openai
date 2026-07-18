@@ -1,0 +1,172 @@
+/* G-Therm Haustechnik — Anschluss- & Heizlast-Planer
+   Ergänzt styles.css (dort sind die Design-Tokens definiert). */
+
+.planer { padding: 26px 0 70px; background: var(--mist); }
+.planer .back {
+  display: inline-flex; align-items: center; gap: .5em;
+  color: var(--steel); font-weight: 700; margin-bottom: 14px;
+}
+.planer .back:hover { color: var(--navy-800); }
+.planer .back .ico { width: 18px; height: 18px; }
+
+.planer__head { margin-bottom: 14px; }
+.planer__head .eyebrow {
+  color: var(--copper); font-weight: 800; letter-spacing: .06em;
+  text-transform: uppercase; font-size: .8rem; margin: 0 0 .2em;
+}
+.planer__head h1 { font-size: clamp(1.7rem, 3.4vw, 2.5rem); margin-bottom: .25em; }
+.planer__intro { color: var(--muted); max-width: 62ch; margin: 0; }
+
+.planer__note {
+  background: #fff; border: 1px solid var(--line); border-left: 4px solid var(--amber);
+  border-radius: 12px; padding: 12px 16px; margin: 16px 0 18px;
+  font-size: .92rem; color: var(--ink);
+}
+.planer__note strong { color: var(--navy-900); }
+
+/* App-Layout: Palette | Bühne | Panels */
+.planer__app {
+  display: grid;
+  grid-template-columns: 232px minmax(0, 1fr) 288px;
+  gap: 14px;
+  align-items: start;
+}
+.planer__side {
+  background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
+  box-shadow: var(--shadow-sm); padding: 14px;
+}
+.planer__side--left { position: sticky; top: 12px; }
+.planer__side--right { display: grid; gap: 14px; }
+
+/* Werkzeuge */
+.tool-row { display: flex; gap: 8px; margin-bottom: 12px; }
+.tool {
+  flex: 1; padding: .5em .6em; border: 1px solid var(--line); background: var(--mist);
+  border-radius: 10px; font-weight: 700; font-size: .9rem; color: var(--navy-800); cursor: pointer;
+  transition: background .15s, border-color .15s, color .15s;
+}
+.tool:hover { border-color: var(--steel); }
+.tool.is-active { background: var(--navy-800); color: #fff; border-color: var(--navy-800); }
+
+/* Bauteil-Palette */
+.palette { display: grid; gap: 6px; }
+.palette__group {
+  font-size: .72rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase;
+  color: var(--muted); margin: 10px 0 2px;
+}
+.palette__group:first-child { margin-top: 0; }
+.chip {
+  display: flex; align-items: center; gap: 9px; width: 100%; text-align: left;
+  padding: 8px 9px; border: 1px solid var(--line); background: #fff; border-radius: 10px;
+  cursor: pointer; font: inherit; transition: border-color .15s, box-shadow .15s, transform .05s;
+}
+.chip:hover { border-color: var(--steel); box-shadow: var(--shadow-sm); }
+.chip:active { transform: translateY(1px); }
+.chip__swatch {
+  flex: 0 0 auto; width: 26px; height: 26px; border-radius: 6px;
+  border: 1px solid rgba(0,0,0,.12);
+}
+.chip__txt { display: grid; line-height: 1.15; }
+.chip__name { font-weight: 700; font-size: .86rem; color: var(--navy-900); }
+.chip__sub { font-size: .74rem; color: var(--muted); }
+.palette__hint { font-size: .76rem; color: var(--muted); margin: 12px 0 0; }
+
+/* Bühne */
+.planer__stage {
+  background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
+  box-shadow: var(--shadow-sm); overflow: hidden;
+}
+.stage-bar {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding: 10px 12px; border-bottom: 1px solid var(--line); background: var(--mist);
+}
+.stage-bar__spacer { flex: 1 1 auto; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; background: #fff; overflow: hidden; }
+.seg__btn {
+  padding: .42em 1em; border: 0; background: transparent; font-weight: 700; font-size: .86rem;
+  color: var(--navy-800); cursor: pointer;
+}
+.seg__btn.is-active { background: var(--navy-800); color: #fff; }
+.chk { display: inline-flex; align-items: center; gap: .45em; font-size: .84rem; color: var(--muted); }
+.chk input { accent-color: var(--steel); }
+.zoom { display: inline-flex; gap: 4px; }
+.zoom button {
+  min-width: 34px; padding: .35em .5em; border: 1px solid var(--line); background: #fff;
+  border-radius: 8px; font-weight: 700; color: var(--navy-800); cursor: pointer; font-size: .84rem;
+}
+.zoom button:hover { border-color: var(--steel); }
+.btn--sm { padding: .5em 1em; font-size: .86rem; }
+.cam-btn { display: inline-flex; align-items: center; gap: .5em; }
+.cam-btn .ico { width: 18px; height: 18px; }
+
+.canvas-wrap { position: relative; background:
+  linear-gradient(0deg, #f7fafc, #ffffff);
+  overflow: auto; }
+#planCanvas { display: block; width: 100%; height: auto; touch-action: none; cursor: crosshair; }
+#planCanvas.tool-select { cursor: default; }
+
+/* Panels rechts */
+.panel { background: #fff; }
+.planer__side--right .panel + .panel { margin-top: 0; }
+.panel__title {
+  font-size: 1rem; margin: 0 0 10px; padding-bottom: 8px; border-bottom: 1px solid var(--line);
+  color: var(--navy-900);
+}
+.props__empty { color: var(--muted); font-size: .9rem; margin: 0; }
+.props__head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.props__dot { width: 14px; height: 14px; border-radius: 4px; border: 1px solid rgba(0,0,0,.15); flex: 0 0 auto; }
+.props__name { font-weight: 800; color: var(--navy-900); font-size: .96rem; }
+.field { display: grid; gap: 4px; margin-bottom: 10px; }
+.field label { font-size: .8rem; font-weight: 700; color: var(--muted); }
+.field input, .field select {
+  padding: .5em .6em; border: 1px solid var(--line); border-radius: 8px; font: inherit; color: var(--ink);
+  background: #fff;
+}
+.field input:focus, .field select:focus { outline: 2px solid var(--steel); border-color: var(--steel); }
+.field__row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.readout {
+  background: var(--steel-100); border: 1px solid #cfe1ec; border-radius: 10px; padding: 10px 12px;
+  margin: 6px 0 10px;
+}
+.readout__big { font-size: 1.3rem; font-weight: 800; color: var(--navy-900); }
+.readout__lbl { font-size: .78rem; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+.readout__split { font-size: .85rem; color: var(--ink); margin-top: 4px; }
+.props__meta { font-size: .82rem; color: var(--muted); margin: 2px 0; }
+.props__meta strong { color: var(--navy-800); }
+.props__actions { display: flex; gap: 8px; margin-top: 12px; }
+.mini-btn {
+  display: inline-flex; align-items: center; gap: .4em; padding: .45em .8em; border-radius: 8px;
+  border: 1px solid var(--line); background: #fff; font-weight: 700; font-size: .84rem; cursor: pointer;
+  color: var(--navy-800);
+}
+.mini-btn:hover { border-color: var(--steel); }
+.mini-btn--danger { color: var(--copper); border-color: #e9c6b6; }
+.mini-btn--danger:hover { background: #fbeee7; }
+.mini-btn .ico { width: 16px; height: 16px; }
+.hint-line { font-size: .8rem; color: var(--muted); margin: 8px 0 0; }
+
+/* Stückliste */
+.bom__empty { color: var(--muted); font-size: .9rem; margin: 0; }
+.bom table { width: 100%; border-collapse: collapse; font-size: .84rem; }
+.bom th, .bom td { text-align: left; padding: 6px 4px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.bom th { color: var(--muted); font-size: .74rem; text-transform: uppercase; letter-spacing: .04em; }
+.bom td.num, .bom th.num { text-align: right; white-space: nowrap; }
+.bom__thread { color: var(--steel); font-weight: 700; }
+.bom__total {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 10px;
+  margin-top: 12px; padding: 10px 12px; background: var(--navy-900); color: #fff; border-radius: 10px;
+}
+.bom__total .lbl { font-size: .8rem; opacity: .85; }
+.bom__total .val { font-size: 1.15rem; font-weight: 800; }
+
+/* Responsiv */
+@media (max-width: 1040px) {
+  .planer__app { grid-template-columns: 200px minmax(0, 1fr); }
+  .planer__side--right { grid-column: 1 / -1; grid-template-columns: 1fr 1fr; display: grid; gap: 14px; }
+}
+@media (max-width: 720px) {
+  .planer__app { grid-template-columns: 1fr; }
+  .planer__side--left { position: static; }
+  .planer__side--right { grid-template-columns: 1fr; }
+  .stage-bar { gap: 8px; }
+}
