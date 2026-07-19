@@ -56,23 +56,54 @@
         nachricht: (form.nachricht.value || '').trim()
       };
 
-      // Fallback: open the user's mail client with a prefilled message.
-      // Replace with a real endpoint / mailto address once available.
-      var to = 'info@g-therm.de';
-      var subject = encodeURIComponent('Anfrage über die Website: ' + data.betreff);
-      var body = encodeURIComponent(
-        'Name: ' + data.name + '\n' +
-        'Telefon: ' + data.tel + '\n' +
-        'E-Mail: ' + data.email + '\n\n' +
-        'Nachricht:\n' + data.nachricht
-      );
-      window.location.href = 'mailto:' + to + '?subject=' + subject + '&body=' + body;
+      var submitBtn = form.querySelector('button[type="submit"]');
+      if (submitBtn) { submitBtn.dataset.label = submitBtn.textContent; submitBtn.disabled = true; submitBtn.textContent = 'Wird gesendet …'; }
+      if (status) { status.className = 'form-status'; status.textContent = 'Wird gesendet …'; }
 
-      if (status) {
-        status.textContent = 'Danke! Ihr E-Mail-Programm öffnet sich – bitte senden Sie die Nachricht ab. Alternativ erreichen Sie uns telefonisch.';
-        status.className = 'form-status ok';
-      }
-      form.reset();
+      // Versand über FormSubmit (formsubmit.co) – kein Server/Account nötig.
+      fetch('https://formsubmit.co/ajax/info@g-therm.de', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          Name: data.name,
+          Telefon: data.tel,
+          email: data.email,
+          Betreff: data.betreff,
+          Nachricht: data.nachricht,
+          _subject: 'Anfrage über die Website: ' + data.betreff,
+          _template: 'table',
+          _captcha: 'false'
+        })
+      }).then(function (res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.json();
+      }).then(function () {
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = submitBtn.dataset.label || 'Nachricht senden'; }
+        if (status) {
+          status.className = 'form-status ok';
+          status.textContent = 'Danke! Ihre Nachricht wurde gesendet – wir melden uns schnellstmöglich bei Ihnen zurück.';
+        }
+        form.reset();
+      }).catch(function () {
+        // Fallback: E-Mail-Programm mit vorausgefüllter Nachricht öffnen
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = submitBtn.dataset.label || 'Nachricht senden'; }
+        var subject = encodeURIComponent('Anfrage über die Website: ' + data.betreff);
+        var body = encodeURIComponent(
+          'Name: ' + data.name + '\n' +
+          'Telefon: ' + data.tel + '\n' +
+          'E-Mail: ' + data.email + '\n\n' +
+          'Nachricht:\n' + data.nachricht
+        );
+        if (status) {
+          status.className = 'form-status form-status--info';
+          status.innerHTML =
+            '<strong>Fast geschafft!</strong> Ihre Nachricht ist vorbereitet — senden Sie sie mit einem Klick per E-Mail, oder rufen Sie kurz an.' +
+            '<span class="form-status__actions">' +
+              '<a class="btn btn--accent" href="mailto:info@g-therm.de?subject=' + subject + '&body=' + body + '">Als E-Mail senden</a>' +
+              '<a class="btn btn--ghost" href="tel:+4923454461855">0234 - 544 618 55</a>' +
+            '</span>';
+        }
+      });
     });
   }
 })();

@@ -116,16 +116,35 @@
     status.textContent = '';
     status.className = 'form-status';
 
-    fetch('/api/kundendienst', {
+    // Versand über FormSubmit (formsubmit.co) – kein Server/Account nötig.
+    var fsPayload = {
+      _subject: 'Kundendienst-Anfrage: ' + payload.kategorie + (payload.notfall ? ' (NOTFALL)' : ''),
+      _template: 'table',
+      _captcha: 'false',
+      Kundentyp: payload.kundentyp,
+      Bereich: payload.kategorie,
+      Notfall: payload.notfall ? 'Ja' : 'Nein',
+      Beschreibung: payload.beschreibung,
+      Name: payload.name,
+      Telefon: payload.telefon,
+      email: payload.email,
+      'PLZ / Ort': (payload.plz + ' ' + payload.ort).trim(),
+      Erreichbar: payload.rueckruf,
+      Fotos: payload.fotos.length ? (payload.fotos.length + ' Foto(s) – werden bei Bedarf per WhatsApp/E-Mail nachgereicht') : 'keine'
+    };
+
+    fetch('https://formsubmit.co/ajax/info@g-therm.de', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(fsPayload)
     }).then(function (res) {
       if (!res.ok) throw new Error('HTTP ' + res.status);
       return res.json();
     }).then(function () {
       form.hidden = true;
       document.getElementById('stepper').hidden = true;
+      var photoNote = document.getElementById('kdSuccessPhotos');
+      if (photoNote && payload.fotos.length) photoNote.hidden = false;
       successEl.hidden = false;
       successEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }).catch(function () {
