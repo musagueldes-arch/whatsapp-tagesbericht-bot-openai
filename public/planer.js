@@ -507,6 +507,17 @@
     save(); render(); renderProps(); renderBom();
   }
 
+  // Raum per Knopf anlegen (kein Zeichnen nötig – ideal am Handy)
+  function addRoomCentered() {
+    var c = s2w(canvas.width / 2, canvas.height / 2);
+    var w = 4, d = 3;
+    var r = { id: id(), type: 'room', x: snapVal(c.x - w / 2), y: snapVal(c.y - d / 2), w: w, d: d, name: 'Raum ' + (state.rooms.length + 1), wm2: null };
+    state.rooms.push(r);
+    selection = { kind: 'room', id: r.id };
+    setTool('select');
+    save(); render(); renderProps(); renderBom();
+  }
+
   // ── Eigenschaften-Panel ─────────────────────────────────────────────────────
   function renderProps() {
     var host = document.getElementById('props');
@@ -526,6 +537,10 @@
         field('Breite (m)', '<input type="number" id="pf-w" min="0.5" step="0.1" value="' + r.w + '" />') +
         field('Tiefe (m)', '<input type="number" id="pf-d" min="0.5" step="0.1" value="' + r.d + '" />') +
       '</div>' +
+      '<div class="field__row">' +
+        field('Position X (m)', '<input type="number" id="pf-x" step="0.1" value="' + r.x + '" />') +
+        field('Position Y (m)', '<input type="number" id="pf-y" step="0.1" value="' + r.y + '" />') +
+      '</div>' +
       field('Spezifische Heizlast (W/m²)',
         '<input type="number" id="pf-wm2" min="0" step="5" placeholder="z. B. 60" value="' + (r.wm2 || '') + '" />') +
       '<div class="readout">' +
@@ -540,6 +555,8 @@
     bindInput('pf-name', function (v) { r.name = v; });
     bindNum('pf-w', function (v) { if (v >= 0.5) r.w = v; });
     bindNum('pf-d', function (v) { if (v >= 0.5) r.d = v; });
+    bindNum('pf-x', function (v) { if (!isNaN(v)) r.x = v; });
+    bindNum('pf-y', function (v) { if (!isNaN(v)) r.y = v; });
     bindNum('pf-wm2', function (v) { r.wm2 = v > 0 ? v : null; }, true);
     delBtn();
   }
@@ -558,6 +575,11 @@
       html += '<p class="props__meta">Anschluss <strong>' + parts.join(' · ') + '</strong></p>';
     }
     if (c.r290) html += '<p class="props__meta">⚠︎ Betrieb mit R290 (Propan) – Schutzbereich beachten.</p>';
+
+    html += '<div class="field__row">' +
+      field('Position X (m)', '<input type="number" id="pf-px" step="0.1" value="' + (Math.round(p.x * 100) / 100) + '" />') +
+      field('Position Y (m)', '<input type="number" id="pf-py" step="0.1" value="' + (Math.round(p.y * 100) / 100) + '" />') +
+    '</div>';
 
     // Anbindematerial (Sanpress / verzinkt / Wavin)
     if (c.anbinde && c.anbinde.length) {
@@ -599,6 +621,8 @@
       '</div>';
     host.innerHTML = html;
 
+    bindNum('pf-px', function (v) { if (!isNaN(v)) p.x = v; });
+    bindNum('pf-py', function (v) { if (!isNaN(v)) p.y = v; });
     var rot = document.getElementById('pf-rot');
     if (rot) rot.addEventListener('click', function () { p.rot = p.rot === 90 ? 0 : 90; save(); render(); renderProps(); });
     delBtn();
@@ -886,6 +910,9 @@
 
   var exportBtn = document.getElementById('exportBtn');
   if (exportBtn) exportBtn.addEventListener('click', exportAngebot);
+
+  var addRoomBtn = document.getElementById('addRoomBtn');
+  if (addRoomBtn) addRoomBtn.addEventListener('click', addRoomCentered);
 
   // ── Init ────────────────────────────────────────────────────────────────────
   buildPalette();

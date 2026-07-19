@@ -89,13 +89,15 @@
         <aside class="planer__side planer__side--left" aria-label="Werkzeuge und Bauteile">
           <div class="tool-row" role="toolbar" aria-label="Werkzeuge">
             <button type="button" class="tool is-active" data-tool="select">Auswählen</button>
-            <button type="button" class="tool" data-tool="room">Raum</button>
+            <button type="button" class="tool" data-tool="room">Raum aufziehen</button>
           </div>
+          <button type="button" class="btn btn--accent btn--sm btn--block add-room" id="addRoomBtn">+ Raum hinzufügen</button>
 
           <div class="palette" id="palette" aria-label="Bauteile"></div>
 
-          <p class="palette__hint">Bauteil antippen → landet in der Mitte, dann verschieben.
-            Raum: Werkzeug „Raum" wählen und aufziehen.</p>
+          <p class="palette__hint">Am einfachsten: <strong>„+ Raum"</strong> tippen, dann im Panel rechts
+            Maße &amp; W/m² eintragen. Bauteil aus der Liste antippen → landet in der Mitte.
+            Alles lässt sich auch per Zahlen-Feld positionieren – Zeichnen ist optional.</p>
         </aside>
 
         <!-- Zeichenfläche -->
