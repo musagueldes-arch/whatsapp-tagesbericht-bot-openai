@@ -95,18 +95,24 @@
 
   // ── Zustand ───────────────────────────────────────────────────────────────
   var STORE_KEY = 'gtherm_planer_v1';
-  var state = { rooms: [], parts: [], nextId: 1 };
-  var tool = 'select';           // 'select' | 'room'
+  var state = { rooms: [], parts: [], pipes: [], nextId: 1 };
+  var tool = 'select';           // 'select' | 'room' | 'pipe'
   var view = '2d';               // '2d' | '3d'
-  var selection = null;          // { kind:'room'|'part', id }
+  var selection = null;          // { kind:'room'|'part'|'pipe', id }
   var snap = true;
   var scale = 46;                // px pro Meter (2D)
   var pan = { x: 40, y: 40 };
   var drag = null;               // laufende Drag-/Zeichen-Operation
+  var pipeMaterial = 'kupfer';
 
   var VL_COLOR = '#e0451f', RL_COLOR = '#1f6f9c';
   var ROOM_FILL = 'rgba(28,106,153,0.06)', ROOM_LINE = '#9db8c8';
   var SNAP_STEP = 0.25;
+  var PIPE_MAT = {
+    kupfer:    { name: 'Kupfer',         color: '#b5732e' },
+    stahl:     { name: 'Stahl verzinkt', color: '#8a949c' },
+    edelstahl: { name: 'Edelstahl',      color: '#aab2b8' }
+  };
 
   // ── Persistenz ──────────────────────────────────────────────────────────────
   function save() {
@@ -117,7 +123,7 @@
       var raw = localStorage.getItem(STORE_KEY);
       if (raw) {
         var s = JSON.parse(raw);
-        if (s && s.rooms && s.parts) { state = s; state.nextId = s.nextId || 1; return true; }
+        if (s && s.rooms && s.parts) { state = s; state.nextId = s.nextId || 1; state.pipes = s.pipes || []; return true; }
       }
     } catch (e) {}
     return false;
@@ -187,6 +193,51 @@
     return { minx: minx, miny: miny, maxx: maxx, maxy: maxy };
   }
 
+  // ── Anschlusspunkte (VL/RL) & Leitungen ─────────────────────────────────────
+  function portPoints(p) {
+    var c = CAT_BY_ID[p.catId], s = partSize(p);
+    if (!c.ports || !c.ports.length) return [];
+    return c.ports.map(function (port, i) {
+      var t = Math.min(s.w - 0.08, 0.12 + i * 0.22);
+      return { x: p.x + t, y: p.y + s.d, type: port, part: p.id };
+    });
+  }
+  function nearestPort(wx, wy, maxD) {
+    var best = null, bd = maxD;
+    state.parts.forEach(function (p) {
+      portPoints(p).forEach(function (pt) {
+        var dd = Math.hypot(pt.x - wx, pt.y - wy);
+        if (dd < bd) { bd = dd; best = pt; }
+      });
+    });
+    return best;
+  }
+  function routePipe(a, b) {
+    if (Math.abs(a.x - b.x) < 0.03 || Math.abs(a.y - b.y) < 0.03) return [a, b];
+    var midY = Math.max(a.y, b.y) + 0.5; // beide nach unten und dann horizontal
+    return [a, { x: a.x, y: midY }, { x: b.x, y: midY }, b];
+  }
+  function pipeLen(pipe) {
+    var L = 0;
+    for (var i = 1; i < pipe.pts.length; i++) L += Math.hypot(pipe.pts[i].x - pipe.pts[i - 1].x, pipe.pts[i].y - pipe.pts[i - 1].y);
+    return L;
+  }
+  function distToSeg(px, py, ax, ay, bx, by) {
+    var dx = bx - ax, dy = by - ay, l2 = dx * dx + dy * dy;
+    if (l2 === 0) return Math.hypot(px - ax, py - ay);
+    var t = Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / l2));
+    return Math.hypot(px - (ax + t * dx), py - (ay + t * dy));
+  }
+  function pipeHitTest(wx, wy) {
+    for (var i = state.pipes.length - 1; i >= 0; i--) {
+      var pp = state.pipes[i].pts;
+      for (var j = 1; j < pp.length; j++) {
+        if (distToSeg(wx, wy, pp[j - 1].x, pp[j - 1].y, pp[j].x, pp[j].y) < 0.18) return { kind: 'pipe', id: state.pipes[i].id, obj: state.pipes[i] };
+      }
+    }
+    return null;
+  }
+
   // ── 2D-Rendering ────────────────────────────────────────────────────────────
   function clear() { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, canvas.width, canvas.height); }
 
@@ -229,8 +280,12 @@
         ctx.fillText('≈ ' + load.toLocaleString('de-DE', { maximumFractionDigits: 1 }) + ' kW', a.x + 6, a.y + 38);
       }
     });
+    // Leitungen (unter den Bauteilen)
+    state.pipes.forEach(function (pipe) { drawPipe2D(pipe, false); });
     // Bauteile
     state.parts.forEach(function (p) { drawPart2D(p); });
+    // Leitungs-Vorschau beim Zeichnen
+    if (drag && drag.mode === 'pipe' && drag.preview) drawPipe2D(drag.preview, true);
     // Temporäres Raum-Rechteck
     if (drag && drag.mode === 'newroom' && drag.rect) {
       var rr = drag.rect, s = w2s(rr.x, rr.y);
@@ -240,6 +295,25 @@
       ctx.strokeRect(s.x, s.y, rr.w * scale, rr.d * scale);
       ctx.restore();
     }
+  }
+
+  function pipePath(pts) {
+    ctx.beginPath();
+    var s0 = w2s(pts[0].x, pts[0].y); ctx.moveTo(s0.x, s0.y);
+    for (var i = 1; i < pts.length; i++) { var s = w2s(pts[i].x, pts[i].y); ctx.lineTo(s.x, s.y); }
+  }
+  function drawPipe2D(pipe, preview) {
+    var col = pipe.color || PIPE_MAT.kupfer.color;
+    var lw = Math.max(5, scale * 0.07);
+    ctx.save();
+    ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+    if (preview) ctx.globalAlpha = 0.8;
+    pipePath(pipe.pts); ctx.strokeStyle = 'rgba(0,0,0,0.28)'; ctx.lineWidth = lw + 2.5; ctx.stroke();
+    pipePath(pipe.pts); ctx.strokeStyle = col; ctx.lineWidth = lw; ctx.stroke();
+    // leichter Glanz
+    pipePath(pipe.pts); ctx.strokeStyle = 'rgba(255,255,255,0.28)'; ctx.lineWidth = Math.max(1, lw * 0.28); ctx.stroke();
+    if (isSel('pipe', pipe.id)) { pipePath(pipe.pts); ctx.setLineDash([4, 3]); ctx.strokeStyle = '#0a2c42'; ctx.lineWidth = 1.6; ctx.stroke(); }
+    ctx.restore();
   }
 
   function drawPart2D(p) {
@@ -274,16 +348,13 @@
       ctx.restore();
     }
     // VL/RL-Punkte an der Vorderkante
-    if (c.ports && c.ports.length) {
-      var py = a.y + dpx;
-      c.ports.forEach(function (port, i) {
-        var px = a.x + 8 + i * 12;
-        ctx.beginPath();
-        ctx.fillStyle = port === 'VL' ? VL_COLOR : RL_COLOR;
-        ctx.arc(px, py, 3.5, 0, Math.PI * 2); ctx.fill();
-        ctx.strokeStyle = '#fff'; ctx.lineWidth = 1; ctx.stroke();
-      });
-    }
+    portPoints(p).forEach(function (pt) {
+      var s2 = w2s(pt.x, pt.y);
+      ctx.beginPath();
+      ctx.fillStyle = pt.type === 'VL' ? VL_COLOR : RL_COLOR;
+      ctx.arc(s2.x, s2.y, 3.8, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.2; ctx.stroke();
+    });
   }
 
   function roundRect(x, y, w, h, r) {
@@ -460,16 +531,18 @@
   function isSel(kind, id) { return selection && selection.kind === kind && selection.id === id; }
   function selectedObj() {
     if (!selection) return null;
-    var arr = selection.kind === 'room' ? state.rooms : state.parts;
+    var arr = selection.kind === 'room' ? state.rooms : selection.kind === 'pipe' ? state.pipes : state.parts;
     for (var i = 0; i < arr.length; i++) if (arr[i].id === selection.id) return arr[i];
     return null;
   }
   function hitTest(wx, wy) {
-    // Bauteile zuerst (oben liegend), dann Räume
+    // Bauteile zuerst (oben liegend), dann Leitungen, dann Räume
     for (var i = state.parts.length - 1; i >= 0; i--) {
       var p = state.parts[i], s = partSize(p);
       if (wx >= p.x && wx <= p.x + s.w && wy >= p.y && wy <= p.y + s.d) return { kind: 'part', id: p.id, obj: p };
     }
+    var ph = pipeHitTest(wx, wy);
+    if (ph) return ph;
     for (var j = state.rooms.length - 1; j >= 0; j--) {
       var r = state.rooms[j];
       if (wx >= r.x && wx <= r.x + r.w && wy >= r.y && wy <= r.y + r.d) return { kind: 'room', id: r.id, obj: r };
@@ -522,9 +595,28 @@
   function renderProps() {
     var host = document.getElementById('props');
     var obj = selectedObj();
-    if (!obj) { host.innerHTML = '<p class="props__empty">Kein Element ausgewählt. Tippe einen Raum oder ein Bauteil an.</p>'; return; }
+    if (!obj) { host.innerHTML = '<p class="props__empty">Kein Element ausgewählt. Tippe einen Raum, ein Bauteil oder eine Leitung an.</p>'; return; }
     if (selection.kind === 'room') renderRoomProps(host, obj);
+    else if (selection.kind === 'pipe') renderPipeProps(host, obj);
     else renderPartProps(host, obj);
+  }
+
+  function renderPipeProps(host, pipe) {
+    var opts = Object.keys(PIPE_MAT).map(function (k) {
+      return '<option value="' + k + '"' + (pipe.material === k ? ' selected' : '') + '>' + PIPE_MAT[k].name + '</option>';
+    }).join('');
+    host.innerHTML =
+      '<div class="props__head"><span class="props__dot" style="background:' + (pipe.color || PIPE_MAT.kupfer.color) + '"></span>' +
+        '<span class="props__name">Leitung</span></div>' +
+      field('Material', '<select id="pf-mat">' + opts + '</select>') +
+      '<p class="props__meta">Länge ca. <strong>' + pipeLen(pipe).toLocaleString('de-DE', { maximumFractionDigits: 2 }) + ' m</strong></p>' +
+      '<p class="hint-line">Von einem VL/RL-Punkt zum anderen ziehen legt eine Leitung an. Bögen entstehen automatisch.</p>' +
+      '<div class="props__actions">' +
+        '<button type="button" class="mini-btn mini-btn--danger" id="pf-del"><svg class="ico"><use href="#i-trash"/></svg> Löschen</button>' +
+      '</div>';
+    var mat = document.getElementById('pf-mat');
+    if (mat) mat.addEventListener('change', function () { pipe.material = mat.value; pipe.color = PIPE_MAT[mat.value].color; save(); render(); renderProps(); });
+    delBtn();
   }
 
   function renderRoomProps(host, r) {
@@ -617,6 +709,7 @@
 
     html += '<div class="props__actions">' +
         '<button type="button" class="mini-btn" id="pf-rot"><svg class="ico"><use href="#i-rotate"/></svg> Drehen</button>' +
+        '<button type="button" class="mini-btn" id="pf-dup">Duplizieren</button>' +
         '<button type="button" class="mini-btn mini-btn--danger" id="pf-del"><svg class="ico"><use href="#i-trash"/></svg> Löschen</button>' +
       '</div>';
     host.innerHTML = html;
@@ -625,6 +718,12 @@
     bindNum('pf-py', function (v) { if (!isNaN(v)) p.y = v; });
     var rot = document.getElementById('pf-rot');
     if (rot) rot.addEventListener('click', function () { p.rot = p.rot === 90 ? 0 : 90; save(); render(); renderProps(); });
+    var dup = document.getElementById('pf-dup');
+    if (dup) dup.addEventListener('click', function () {
+      var np = mkPart(p.catId, snapVal(p.x + 0.5), snapVal(p.y + 0.5)); np.rot = p.rot;
+      state.parts.push(np); selection = { kind: 'part', id: np.id };
+      save(); render(); renderProps(); renderBom();
+    });
     delBtn();
   }
 
@@ -635,6 +734,7 @@
   function deleteSelected() {
     if (!selection) return;
     if (selection.kind === 'room') state.rooms = state.rooms.filter(function (r) { return r.id !== selection.id; });
+    else if (selection.kind === 'pipe') state.pipes = state.pipes.filter(function (p) { return p.id !== selection.id; });
     else state.parts = state.parts.filter(function (p) { return p.id !== selection.id; });
     selection = null;
     save(); render(); renderProps(); renderBom();
@@ -718,7 +818,15 @@
       drag = { mode: 'newroom', start: { x: snapVal(w.x), y: snapVal(w.y) }, rect: null };
       return;
     }
+    if (tool === 'pipe') {
+      var sp = nearestPort(w.x, w.y, 0.45);
+      drag = { mode: 'pipe', a: sp ? { x: sp.x, y: sp.y } : { x: snapVal(w.x), y: snapVal(w.y) }, end: null, preview: null };
+      return;
+    }
     var hit = hitTest(w.x, w.y);
+    if (hit && hit.kind === 'pipe') {
+      selection = { kind: 'pipe', id: hit.id }; drag = null; renderProps(); render(); return;
+    }
     if (hit) {
       selection = { kind: hit.kind, id: hit.id };
       drag = { mode: 'move', kind: hit.kind, id: hit.id, off: { x: w.x - hit.obj.x, y: w.y - hit.obj.y }, moved: false };
@@ -736,6 +844,11 @@
       var x = Math.min(drag.start.x, snapVal(w.x)), y = Math.min(drag.start.y, snapVal(w.y));
       var ww = Math.abs(snapVal(w.x) - drag.start.x), dd = Math.abs(snapVal(w.y) - drag.start.y);
       drag.rect = { x: x, y: y, w: ww, d: dd };
+      render();
+    } else if (drag.mode === 'pipe') {
+      var ep = nearestPort(w.x, w.y, 0.45);
+      drag.end = ep ? { x: ep.x, y: ep.y } : { x: snapVal(w.x), y: snapVal(w.y) };
+      drag.preview = { pts: routePipe(drag.a, drag.end), color: PIPE_MAT[pipeMaterial].color };
       render();
     } else if (drag.mode === 'move') {
       var obj = (drag.kind === 'room' ? state.rooms : state.parts).filter(function (o) { return o.id === drag.id; })[0];
@@ -755,6 +868,15 @@
       selection = { kind: 'room', id: r.id };
       setTool('select');
       renderProps();
+    }
+    if (drag.mode === 'pipe' && drag.end) {
+      var pts = routePipe(drag.a, drag.end);
+      if (pipeLen({ pts: pts }) > 0.2) {
+        var pipe = { id: id(), type: 'pipe', pts: pts, material: pipeMaterial, color: PIPE_MAT[pipeMaterial].color };
+        state.pipes.push(pipe);
+        selection = { kind: 'pipe', id: pipe.id };
+        renderProps();
+      }
     }
     if (drag.mode === 'move' && drag.moved) renderProps(); // Auslegung ggf. aktualisieren (Raumwechsel)
     drag = null;
@@ -783,7 +905,6 @@
     Array.prototype.forEach.call(document.querySelectorAll('.seg__btn'), function (b) {
       b.classList.toggle('is-active', b.getAttribute('data-view') === v);
     });
-    document.getElementById('photoBtn').hidden = (v !== '3d');
     render();
   }
   Array.prototype.forEach.call(document.querySelectorAll('.seg__btn'), function (b) {
@@ -812,8 +933,7 @@
 
   // ── Foto-Export ─────────────────────────────────────────────────────────────
   document.getElementById('photoBtn').addEventListener('click', function () {
-    if (view !== '3d') setView('3d');
-    render3D();
+    render();
     try {
       var url = canvas.toDataURL('image/png');
       var a = document.createElement('a');
@@ -913,6 +1033,12 @@
 
   var addRoomBtn = document.getElementById('addRoomBtn');
   if (addRoomBtn) addRoomBtn.addEventListener('click', addRoomCentered);
+
+  var pipeMatSel = document.getElementById('pipeMat');
+  if (pipeMatSel) pipeMatSel.addEventListener('change', function () {
+    pipeMaterial = pipeMatSel.value;
+    if (tool !== 'pipe') setTool('pipe');
+  });
 
   // ── Init ────────────────────────────────────────────────────────────────────
   buildPalette();

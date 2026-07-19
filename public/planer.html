@@ -90,14 +90,24 @@
           <div class="tool-row" role="toolbar" aria-label="Werkzeuge">
             <button type="button" class="tool is-active" data-tool="select">Auswählen</button>
             <button type="button" class="tool" data-tool="room">Raum aufziehen</button>
+            <button type="button" class="tool" data-tool="pipe">Leitung</button>
           </div>
           <button type="button" class="btn btn--accent btn--sm btn--block add-room" id="addRoomBtn">+ Raum hinzufügen</button>
+          <div class="pipe-mat">
+            <label for="pipeMat">Leitung-Material</label>
+            <select id="pipeMat">
+              <option value="kupfer">Kupfer</option>
+              <option value="stahl">Stahl verzinkt</option>
+              <option value="edelstahl">Edelstahl</option>
+            </select>
+          </div>
 
           <div class="palette" id="palette" aria-label="Bauteile"></div>
 
-          <p class="palette__hint">Am einfachsten: <strong>„+ Raum"</strong> tippen, dann im Panel rechts
+          <p class="palette__hint">Am einfachsten: <strong>„+ Raum"</strong> tippen, dann rechts
             Maße &amp; W/m² eintragen. Bauteil aus der Liste antippen → landet in der Mitte.
-            Alles lässt sich auch per Zahlen-Feld positionieren – Zeichnen ist optional.</p>
+            <strong>Leitung</strong>: Werkzeug wählen und von einem VL/RL-Punkt zum anderen ziehen –
+            Bögen entstehen automatisch. Alles auch per Zahlen-Feld positionierbar.</p>
         </aside>
 
         <!-- Zeichenfläche -->
@@ -114,7 +124,7 @@
               <button type="button" id="zoomFit">Einpassen</button>
               <button type="button" id="zoomIn" aria-label="Vergrößern">+</button>
             </div>
-            <button type="button" class="btn btn--accent btn--sm cam-btn" id="photoBtn" hidden>
+            <button type="button" class="btn btn--accent btn--sm cam-btn" id="photoBtn">
               <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-camera"/></svg> Foto
             </button>
           </div>

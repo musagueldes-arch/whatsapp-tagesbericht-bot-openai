@@ -39,12 +39,21 @@
 .planer__side--right { display: grid; gap: 14px; }
 
 /* Werkzeuge */
-.tool-row { display: flex; gap: 8px; margin-bottom: 12px; }
+.tool-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
 .tool {
-  flex: 1; padding: .5em .6em; border: 1px solid var(--line); background: var(--mist);
-  border-radius: 10px; font-weight: 700; font-size: .9rem; color: var(--navy-800); cursor: pointer;
+  flex: 1 1 auto; min-width: 84px; padding: .5em .6em; border: 1px solid var(--line); background: var(--mist);
+  border-radius: 10px; font-weight: 700; font-size: .88rem; color: var(--navy-800); cursor: pointer;
   transition: background .15s, border-color .15s, color .15s;
 }
+.pipe-mat { display: grid; gap: 4px; margin: 10px 0 2px; }
+.pipe-mat label {
+  font-size: .72rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: var(--muted);
+}
+.pipe-mat select {
+  padding: .5em .55em; border: 1px solid var(--line); border-radius: 8px; font: inherit;
+  background: #fff; color: var(--ink);
+}
+.pipe-mat select:focus { outline: 2px solid var(--steel); border-color: var(--steel); }
 .tool:hover { border-color: var(--steel); }
 .tool.is-active { background: var(--navy-800); color: #fff; border-color: var(--navy-800); }
 
