@@ -224,6 +224,15 @@
     for (var i = 1; i < pipe.pts.length; i++) L += Math.hypot(pipe.pts[i].x - pipe.pts[i - 1].x, pipe.pts[i].y - pipe.pts[i - 1].y);
     return L;
   }
+  function pipeMidPoint(pts) {
+    var total = pipeLen({ pts: pts }), half = total / 2, acc = 0;
+    for (var i = 1; i < pts.length; i++) {
+      var seg = Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y);
+      if (acc + seg >= half && seg > 0) { var t = (half - acc) / seg; return { x: pts[i - 1].x + (pts[i].x - pts[i - 1].x) * t, y: pts[i - 1].y + (pts[i].y - pts[i - 1].y) * t }; }
+      acc += seg;
+    }
+    return pts[Math.floor(pts.length / 2)];
+  }
   function distToSeg(px, py, ax, ay, bx, by) {
     var dx = bx - ax, dy = by - ay, l2 = dx * dx + dy * dy;
     if (l2 === 0) return Math.hypot(px - ax, py - ay);
@@ -264,8 +273,9 @@
   function clear() { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, canvas.width, canvas.height); }
 
   function drawGrid() {
-    var minor = 0.5; // m
-    if (minor * scale < 9) minor = 1;
+    var minor = 0.25; // m – feines Raster
+    if (minor * scale < 7) minor = 0.5;
+    if (minor * scale < 7) minor = 1;
     var tl = s2w(0, 0), br = s2w(canvas.width, canvas.height);
     ctx.save();
     var startX = Math.floor(tl.x / minor) * minor, startY = Math.floor(tl.y / minor) * minor;
@@ -387,6 +397,20 @@
     pipePath(pipe.pts); ctx.strokeStyle = 'rgba(255,255,255,0.28)'; ctx.lineWidth = Math.max(1, lw * 0.28); ctx.stroke();
     if (isSel('pipe', pipe.id)) { pipePath(pipe.pts); ctx.setLineDash([4, 3]); ctx.strokeStyle = '#0a2c42'; ctx.lineWidth = 1.6; ctx.stroke(); }
     ctx.restore();
+    // Längen-Label direkt an der Leitung
+    if (!preview) {
+      var mp = pipeMidPoint(pipe.pts), sp = w2s(mp.x, mp.y);
+      var txt = pipeLen(pipe).toLocaleString('de-DE', { maximumFractionDigits: 2 }) + ' m';
+      ctx.save();
+      ctx.font = '700 11px "Segoe UI", system-ui, sans-serif';
+      var tw = ctx.measureText(txt).width;
+      ctx.fillStyle = 'rgba(255,255,255,0.92)';
+      ctx.fillRect(sp.x - tw / 2 - 4, sp.y - 9, tw + 8, 18);
+      ctx.strokeStyle = col; ctx.lineWidth = 1; ctx.strokeRect(sp.x - tw / 2 - 4, sp.y - 9, tw + 8, 18);
+      ctx.fillStyle = '#3b4a55'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(txt, sp.x, sp.y);
+      ctx.restore();
+    }
   }
 
   function drawPart2D(p) {
@@ -862,7 +886,7 @@
     state.parts.forEach(function (p) { counts[p.catId] = (counts[p.catId] || 0) + 1; });
     var ids = Object.keys(counts);
     var html = '';
-    if (!ids.length && !state.rooms.length) {
+    if (!ids.length && !state.rooms.length && !state.pipes.length) {
       host.innerHTML = '<p class="bom__empty">Noch nichts platziert. Bauteile aus der Palette hinzufügen oder einen Raum aufziehen.</p>';
       return;
     }
@@ -891,6 +915,18 @@
         html += '</tbody></table>';
         html += '<p class="bom__foot">Gewinde-Übergänge als Sanpress (Rotguss) oder verzinkt; Dimensionen sind Standard-Annahmen – im Angebot je Projekt prüfen.</p>';
       }
+    }
+    // Leitungen aggregieren (laufende Meter je Material)
+    var pmat = {};
+    state.pipes.forEach(function (p) { var k = p.material || 'kupfer'; pmat[k] = (pmat[k] || 0) + pipeLen(p); });
+    var pk = Object.keys(pmat);
+    if (pk.length) {
+      html += '<div class="bom__subhead">Leitungen <span>lfm</span></div><table><tbody>';
+      pk.forEach(function (k) {
+        var nm = (PIPE_MAT[k] || { name: k }).name;
+        html += '<tr><td>' + nm + '</td><td class="num">' + pmat[k].toLocaleString('de-DE', { maximumFractionDigits: 2 }) + ' m</td></tr>';
+      });
+      html += '</tbody></table>';
     }
     var rooms = state.rooms.length;
     var bl = buildingLoadKW();
