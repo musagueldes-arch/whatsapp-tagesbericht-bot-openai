@@ -15,6 +15,61 @@
   var MAX_FILES = 5;
   var photos = []; // { name, dataUrl }
 
+  // ── Geräte-Felder: Modell & Fehlercode je Hersteller auswählbar ──────────
+  var herstellerSel = form.hersteller;
+  var modellSel = form.modell, modellFrei = form.modellFrei;
+  var codeSel = form.fehlercode, codeFrei = form.fehlercodeFrei;
+  var codeInfo = document.getElementById('fehlercodeInfo');
+  var FC = window.GThermFehlercodes || null;
+
+  function fillSelect(sel, items, hasBrand) {
+    sel.innerHTML = '';
+    var ph = document.createElement('option');
+    ph.value = '';
+    ph.textContent = hasBrand ? '— bitte wählen —' : '— bitte zuerst Hersteller wählen —';
+    sel.appendChild(ph);
+    items.forEach(function (it) {
+      var o = document.createElement('option');
+      o.value = it.value; o.textContent = it.label;
+      sel.appendChild(o);
+    });
+    var frei = document.createElement('option');
+    frei.value = '__frei__'; frei.textContent = 'Anderes / nicht gelistet';
+    sel.appendChild(frei);
+  }
+  function toggleFrei(sel, freiInput) {
+    var on = sel.value === '__frei__';
+    freiInput.hidden = !on;
+    if (!on) freiInput.value = '';
+  }
+  function showCodeInfo() {
+    if (!codeInfo) return;
+    var brand = herstellerSel.value, code = codeSel.value;
+    if (FC && brand && code && code !== '__frei__') {
+      var res = FC.lookup(brand, code);
+      if (res.status === 'found') { codeInfo.textContent = res.code + ' – ' + res.bedeutung; codeInfo.hidden = false; return; }
+    }
+    codeInfo.hidden = true; codeInfo.textContent = '';
+  }
+  function repopulate() {
+    var brand = herstellerSel.value;
+    var modelle = FC ? FC.getModelle(brand) : [];
+    var codes = FC ? FC.getCodes(brand) : [];
+    fillSelect(modellSel, modelle.map(function (m) { return { value: m, label: m }; }), !!brand);
+    fillSelect(codeSel, codes.map(function (c) { return { value: c.code, label: c.code + ' – ' + c.bedeutung }; }), !!brand);
+    toggleFrei(modellSel, modellFrei);
+    toggleFrei(codeSel, codeFrei);
+    showCodeInfo();
+  }
+  if (herstellerSel && modellSel && codeSel) {
+    herstellerSel.addEventListener('change', repopulate);
+    modellSel.addEventListener('change', function () { toggleFrei(modellSel, modellFrei); });
+    codeSel.addEventListener('change', function () { toggleFrei(codeSel, codeFrei); showCodeInfo(); });
+    repopulate();
+  }
+  function effModell() { return modellSel.value === '__frei__' ? (modellFrei.value || '').trim() : (modellSel.value || ''); }
+  function effFehlercode() { return codeSel.value === '__frei__' ? (codeFrei.value || '').trim() : (codeSel.value || ''); }
+
   function showStep(n) {
     current = n;
     steps.forEach(function (s) { s.classList.toggle('is-active', Number(s.dataset.step) === n); });
@@ -103,8 +158,8 @@
       notfall: form.notfall.checked,
       beschreibung: form.beschreibung.value.trim(),
       hersteller: form.hersteller.value,
-      modell: form.modell.value.trim(),
-      fehlercode: form.fehlercode.value.trim(),
+      modell: effModell(),
+      fehlercode: effFehlercode(),
       name: form.name.value.trim(),
       telefon: form.telefon.value.trim(),
       email: form.email.value.trim(),

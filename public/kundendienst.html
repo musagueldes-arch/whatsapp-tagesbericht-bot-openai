@@ -137,13 +137,20 @@
           <div class="field-row">
             <div class="field">
               <label for="modell">Modell / Typ <span class="legend-opt">(optional)</span></label>
-              <input type="text" id="modell" name="modell" placeholder="z. B. Vitodens 200-W" />
+              <select id="modell" name="modell">
+                <option value="">— bitte zuerst Hersteller wählen —</option>
+              </select>
+              <input type="text" id="modellFrei" name="modellFrei" class="kd-frei" placeholder="Modell / Typ eingeben" hidden />
             </div>
             <div class="field">
               <label for="fehlercode">Fehlercode <span class="legend-opt">(optional)</span></label>
-              <input type="text" id="fehlercode" name="fehlercode" placeholder="z. B. F5, EA, blinkende LED" />
+              <select id="fehlercode" name="fehlercode">
+                <option value="">— bitte zuerst Hersteller wählen —</option>
+              </select>
+              <input type="text" id="fehlercodeFrei" name="fehlercodeFrei" class="kd-frei" placeholder="z. B. F5, EA, blinkende LED" hidden />
             </div>
           </div>
+          <p class="fc-inline" id="fehlercodeInfo" hidden></p>
           <p class="kd__hint">Hersteller, Modell und Fehlercode finden Sie meist am Gerät bzw. im Display — ein Foto vom Typenschild/Display können Sie im nächsten Schritt hochladen. Diese Angaben helfen uns, die Störung schneller einzuordnen.</p>
 
           <div class="kd__nav">
@@ -281,6 +288,7 @@
   </footer>
 
   <script src="script.js"></script>
+  <script src="fehlercodes.js"></script>
   <script src="kundendienst.js"></script>
 </body>
 </html>

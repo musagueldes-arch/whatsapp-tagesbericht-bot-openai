@@ -417,13 +417,14 @@
           <h2>Zufriedene Kunden sind unser bester Beleg</h2>
           <p class="section__sub">Ihre Meinung zählt — und hilft anderen bei der Wahl des richtigen Betriebs. Bewerten Sie uns bei Google oder lesen Sie, was andere über uns sagen.</p>
         </div>
-        <div class="reviews reveal">
-          <div class="reviews__stars" aria-hidden="true">★★★★★</div>
-          <p class="reviews__text">Empfehlungen aus Bochum &amp; dem Ruhrgebiet — überzeugen Sie sich selbst.</p>
+        <div class="reviewsblock reveal">
+          <div id="reviewsSummary"></div>
+          <div class="reviewgrid" id="reviewsGrid"></div>
+          <p id="reviewsBeispiel" class="gallery__note" hidden></p>
           <div class="reviews__actions">
-            <!-- TODO: Durch euren echten Google-Rezensionslink ersetzen (Google Unternehmensprofil → „Rezensionen anfragen" → Kurzlink g.page/r/…). -->
-            <a class="btn btn--accent btn--lg" href="https://www.google.com/maps/search/?api=1&amp;query=G-Therm+Haustechnik+Bochum" target="_blank" rel="noopener">Auf Google bewerten</a>
-            <a class="btn btn--ghost btn--lg" href="https://www.google.com/maps/search/?api=1&amp;query=G-Therm+Haustechnik+Bochum" target="_blank" rel="noopener">Bewertungen ansehen</a>
+            <!-- TODO: In bewertungen.js `profilUrl` auf euren echten Google-/g.page-Link setzen. -->
+            <a class="btn btn--accent btn--lg" id="reviewsBtnRate" href="https://www.google.com/maps/search/?api=1&amp;query=G-Therm+Haustechnik+Bochum" target="_blank" rel="noopener">Auf Google bewerten</a>
+            <a class="btn btn--ghost btn--lg" id="reviewsBtnSee" href="https://www.google.com/maps/search/?api=1&amp;query=G-Therm+Haustechnik+Bochum" target="_blank" rel="noopener">Bewertungen ansehen</a>
           </div>
         </div>
       </div>
@@ -612,5 +613,6 @@
   <a class="fab" href="tel:+4923454461855" aria-label="G-Therm Haustechnik anrufen"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-phone"/></svg></a>
 
   <script src="script.js"></script>
+  <script src="bewertungen.js"></script>
 </body>
 </html>
