@@ -249,17 +249,19 @@
     return null;
   }
   // Wände: Endpunkt-Fang (Ecken verbinden) + Treffer
-  function wallEndpoints() {
+  function wallEndpoints(exceptId) {
     var out = [];
-    state.walls.forEach(function (w) { out.push({ x: w.x1, y: w.y1 }); out.push({ x: w.x2, y: w.y2 }); });
+    state.walls.forEach(function (w) { if (exceptId && w.id === exceptId) return; out.push({ x: w.x1, y: w.y1 }); out.push({ x: w.x2, y: w.y2 }); });
     return out;
   }
-  function snapPoint(wx, wy) {
+  function snapPoint(wx, wy, exceptId) {
     var best = null, bd = 0.30;
-    wallEndpoints().forEach(function (e) { var dd = Math.hypot(e.x - wx, e.y - wy); if (dd < bd) { bd = dd; best = e; } });
+    wallEndpoints(exceptId).forEach(function (e) { var dd = Math.hypot(e.x - wx, e.y - wy); if (dd < bd) { bd = dd; best = e; } });
     if (best) return { x: best.x, y: best.y };
     return { x: snapVal(wx), y: snapVal(wy) };
   }
+  function snapDelta(v) { return snap ? Math.round(v / SNAP_STEP) * SNAP_STEP : Math.round(v * 100) / 100; }
+  function wallById(wid) { for (var i = 0; i < state.walls.length; i++) if (state.walls[i].id === wid) return state.walls[i]; return null; }
   function wallHitTest(wx, wy) {
     for (var i = state.walls.length - 1; i >= 0; i--) {
       var w = state.walls[i];
@@ -330,6 +332,16 @@
     state.rooms.forEach(function (r) { drawRoom2D(r); });
     // Freie Wände
     state.walls.forEach(function (w) { drawWall(w, isSel('wall', w.id)); });
+    // Anfasspunkte der gewählten Wand
+    if (selection && selection.kind === 'wall') {
+      var sw = wallById(selection.id);
+      if (sw) [[sw.x1, sw.y1], [sw.x2, sw.y2]].forEach(function (e) {
+        var s = w2s(e[0], e[1]);
+        ctx.beginPath(); ctx.arc(s.x, s.y, 5.5, 0, Math.PI * 2);
+        ctx.fillStyle = '#fff'; ctx.fill();
+        ctx.strokeStyle = '#0a2c42'; ctx.lineWidth = 2; ctx.stroke();
+      });
+    }
     // Leitungen (unter den Bauteilen)
     state.pipes.forEach(function (pipe) { drawPipe2D(pipe, false); });
     // Bauteile
@@ -707,7 +719,7 @@
         '<span class="props__name">Wand</span></div>' +
       '<p class="props__meta">Länge <strong>' + wallLen(w).toLocaleString('de-DE', { maximumFractionDigits: 2 }) + ' m</strong></p>' +
       field('Wandstärke (m)', '<input type="number" id="pf-wt" min="0.06" step="0.01" value="' + (w.t || WALL_T) + '" />') +
-      '<p class="hint-line">Werkzeug „Wand" wählen und ziehen; Endpunkte rasten an bestehende Ecken ein – so entsteht der Grundriss.</p>' +
+      '<p class="hint-line">Zum Ändern: Wand am Körper ziehen = verschieben; an einem <strong>Anfasspunkt</strong> (Ende) ziehen = Länge/Position anpassen. Endpunkte rasten an andere Ecken ein.</p>' +
       '<div class="props__actions">' +
         '<button type="button" class="mini-btn mini-btn--danger" id="pf-del"><svg class="ico"><use href="#i-trash"/></svg> Löschen</button>' +
       '</div>';
@@ -956,8 +968,18 @@
       return;
     }
     var hit = hitTest(w.x, w.y);
-    if (hit && (hit.kind === 'pipe' || hit.kind === 'wall')) {
-      selection = { kind: hit.kind, id: hit.id }; drag = null; renderProps(); render(); return;
+    if (hit && hit.kind === 'wall') {
+      var wl = hit.obj;
+      selection = { kind: 'wall', id: wl.id };
+      var d1 = Math.hypot(w.x - wl.x1, w.y - wl.y1), d2 = Math.hypot(w.x - wl.x2, w.y - wl.y2);
+      var hr = Math.max(0.20, (wl.t || WALL_T));
+      if (d1 < hr && d1 <= d2) drag = { mode: 'wallpt', id: wl.id, which: 1 };
+      else if (d2 < hr) drag = { mode: 'wallpt', id: wl.id, which: 2 };
+      else drag = { mode: 'wallmove', id: wl.id, start: { x: w.x, y: w.y }, orig: { x1: wl.x1, y1: wl.y1, x2: wl.x2, y2: wl.y2 } };
+      renderProps(); render(); return;
+    }
+    if (hit && hit.kind === 'pipe') {
+      selection = { kind: 'pipe', id: hit.id }; drag = null; renderProps(); render(); return;
     }
     if (hit) {
       selection = { kind: hit.kind, id: hit.id };
@@ -984,6 +1006,17 @@
       render();
     } else if (drag.mode === 'wall') {
       drag.end = snapPoint(w.x, w.y);
+      render();
+    } else if (drag.mode === 'wallpt') {
+      var wp = wallById(drag.id); if (!wp) return;
+      var sp = snapPoint(w.x, w.y, drag.id);
+      if (drag.which === 1) { wp.x1 = sp.x; wp.y1 = sp.y; } else { wp.x2 = sp.x; wp.y2 = sp.y; }
+      render();
+    } else if (drag.mode === 'wallmove') {
+      var wm = wallById(drag.id); if (!wm) return;
+      var ddx = snapDelta(w.x - drag.start.x), ddy = snapDelta(w.y - drag.start.y);
+      wm.x1 = drag.orig.x1 + ddx; wm.y1 = drag.orig.y1 + ddy;
+      wm.x2 = drag.orig.x2 + ddx; wm.y2 = drag.orig.y2 + ddy;
       render();
     } else if (drag.mode === 'move') {
       var obj = (drag.kind === 'room' ? state.rooms : state.parts).filter(function (o) { return o.id === drag.id; })[0];
@@ -1022,6 +1055,7 @@
       }
     }
     if (drag.mode === 'move' && drag.moved) renderProps(); // Auslegung ggf. aktualisieren (Raumwechsel)
+    if (drag.mode === 'wallpt' || drag.mode === 'wallmove') renderProps(); // Länge aktualisieren
     drag = null;
     save(); render(); renderBom();
   });
