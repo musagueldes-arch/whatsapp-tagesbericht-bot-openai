@@ -59,6 +59,10 @@
       { id: 'verschraubung', name: 'Verschraubung', sub: 'Gewinde-Übergang',
         kind: 'fitting', w: 0.14, d: 0.14, h: 0.14, color: '#8aa0ad',
         ports: [], fitting: { gewinde: '', sys: '' } },
+      { id: 'panzerschlauch', name: 'Panzerschlauch', sub: 'flexibel · WP-Anbindung · 1¼" ÜM',
+        kind: 'fitting', w: 0.10, d: 0.10, h: 0.10, color: '#7c8b96',
+        ports: [], fitting: { gewinde: '1¼" ÜM', sys: 'DN32' },
+        hint: 'Flexibler Anschlussschlauch zur Schwingungsentkopplung an der Außeneinheit – meist paarweise (VL+RL).' },
       { id: 'pufferspeicher', name: 'Pufferspeicher', sub: 'z. B. 100–200 l',
         kind: 'fitting', w: 0.55, d: 0.55, h: 1.20, color: '#6f8592',
         ports: ['VL', 'RL'], fitting: { gewinde: '1"', sys: '35 mm' },
@@ -544,6 +548,8 @@
       html += '</ul>';
       if (c.hint) html += '<p class="anbinde__hint">' + c.hint + '</p>';
       html += '</div>';
+    } else if (c.hint) {
+      html += '<p class="hint-line">' + c.hint + '</p>';
     }
 
     // Heizkörper-/FBH-Schnellauslegung
