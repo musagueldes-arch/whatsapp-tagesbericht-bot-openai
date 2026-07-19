@@ -114,8 +114,37 @@
 
           <div class="field">
             <label for="beschreibung">Fehlerbeschreibung</label>
-            <textarea id="beschreibung" name="beschreibung" rows="5" required placeholder="Was funktioniert nicht? Seit wann? Welches Gerät / welcher Hersteller (falls bekannt)?"></textarea>
+            <textarea id="beschreibung" name="beschreibung" rows="5" required placeholder="Was funktioniert nicht? Seit wann? Was haben Sie schon versucht?"></textarea>
           </div>
+
+          <div class="field">
+            <label for="hersteller">Hersteller <span class="legend-opt">(optional)</span></label>
+            <select id="hersteller" name="hersteller">
+              <option value="">Unbekannt / bitte wählen</option>
+              <option>Viessmann</option>
+              <option>Vaillant</option>
+              <option>Bosch</option>
+              <option>Buderus</option>
+              <option>Junkers</option>
+              <option>Wolf</option>
+              <option>Brötje</option>
+              <option>Weishaupt</option>
+              <option>Daikin</option>
+              <option>Stiebel Eltron</option>
+              <option>Sonstiger / weiß nicht</option>
+            </select>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="modell">Modell / Typ <span class="legend-opt">(optional)</span></label>
+              <input type="text" id="modell" name="modell" placeholder="z. B. Vitodens 200-W" />
+            </div>
+            <div class="field">
+              <label for="fehlercode">Fehlercode <span class="legend-opt">(optional)</span></label>
+              <input type="text" id="fehlercode" name="fehlercode" placeholder="z. B. F5, EA, blinkende LED" />
+            </div>
+          </div>
+          <p class="kd__hint">Hersteller, Modell und Fehlercode finden Sie meist am Gerät bzw. im Display — ein Foto vom Typenschild/Display können Sie im nächsten Schritt hochladen. Diese Angaben helfen uns, die Störung schneller einzuordnen.</p>
 
           <div class="kd__nav">
             <span></span>

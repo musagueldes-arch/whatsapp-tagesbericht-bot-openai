@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Monteur-Service · Fehlercode-Schnellsuche | G-Therm (intern)</title>
+  <meta name="description" content="Interne Service-Seite für das G-Therm-Team: Fehlercode-Schnellsuche und Hersteller-Serviceportale." />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#0a2c42" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="manifest" href="site.webmanifest" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+
+  <svg width="0" height="0" class="sprite" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="i-wrench" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></symbol>
+      <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.81.36 1.6.7 2.34a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.74.34 1.53.57 2.34.7A2 2 0 0 1 22 16.92z"/></symbol>
+      <symbol id="i-pin" viewBox="0 0 24 24"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></symbol>
+      <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 1.8"/></symbol>
+      <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></symbol>
+      <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></symbol>
+    </defs>
+  </svg>
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <div class="container topbar__inner">
+      <span class="topbar__item"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-pin"/></svg> Lindener Str. 111 · 44879 Bochum</span>
+      <span class="topbar__sep" aria-hidden="true">·</span>
+      <a class="topbar__item" href="tel:+4923454461855"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-phone"/></svg> 0234 - 544 618 55</a>
+      <span class="topbar__sep" aria-hidden="true">·</span>
+      <span class="topbar__item topbar__hours"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-clock"/></svg> Interne Seite</span>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="header" id="top">
+    <div class="container header__inner">
+      <a class="brand" href="index.html" aria-label="G-Therm Haustechnik Startseite">
+        <span class="brand__mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" width="32" height="32" role="img" aria-hidden="true">
+            <path d="M16 2c3 5 6 7 6 12a6 6 0 0 1-12 0c0-2 .8-3.6 2-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M13 24c0 2 1.3 3.4 3 3.4S19 26 19 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span class="brand__text"><strong>G-Therm</strong> Haustechnik</span>
+      </a>
+      <nav class="nav" id="nav" aria-label="Hauptnavigation">
+        <a href="index.html">Startseite</a>
+        <a href="kundendienst.html">Kundendienst</a>
+        <a class="btn btn--primary nav__cta" href="tel:+4923454461855">Anrufen</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="kd">
+    <div class="container">
+      <a class="back" href="index.html"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow-left"/></svg> Zur Startseite</a>
+
+      <div class="kd__head">
+        <p class="eyebrow">Interne Service-Seite · fürs Team</p>
+        <h1>Fehlercode-Schnellsuche &amp; Hersteller-Portale</h1>
+        <p class="kd__intro">Schnell nachschlagen, was ein Fehlercode bedeutet: Hersteller wählen, Code eingeben — die Suche öffnet die passenden Treffer. Für offizielle Angaben die Hersteller-Serviceportale unten nutzen.</p>
+      </div>
+
+      <!-- Schnellsuche -->
+      <div class="wp-check" style="max-width:720px">
+        <div class="field-row">
+          <div class="field">
+            <label for="mHersteller">Hersteller</label>
+            <select id="mHersteller">
+              <option value="Viessmann">Viessmann</option>
+              <option value="Vaillant">Vaillant</option>
+              <option value="Bosch">Bosch</option>
+              <option value="Buderus">Buderus</option>
+              <option value="Junkers">Junkers</option>
+              <option value="Wolf">Wolf</option>
+              <option value="Brötje">Brötje</option>
+              <option value="Weishaupt">Weishaupt</option>
+              <option value="Daikin">Daikin</option>
+              <option value="Stiebel Eltron">Stiebel Eltron</option>
+              <option value="">(ohne Hersteller)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="mCode">Fehlercode</label>
+            <input type="text" id="mCode" placeholder="z. B. F5, EA, 0F3" autocomplete="off" />
+          </div>
+        </div>
+        <button type="button" class="btn btn--accent" id="mSearch"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-search"/></svg> Fehlercode nachschlagen</button>
+        <p class="wp-check__note">Öffnet eine Websuche „Hersteller + Fehlercode + Störung" in einem neuen Tab. Für verbindliche Angaben (Bedeutung, Behebung) bitte die offizielle Hersteller-Dokumentation unten verwenden.</p>
+      </div>
+
+      <!-- Hersteller-Portale -->
+      <div class="section__head reveal" style="text-align:left;margin:44px 0 18px 0;max-width:none">
+        <p class="eyebrow">Hersteller-Serviceportale</p>
+        <h2 style="font-size:1.4rem">Offizielle Quellen (Handbücher &amp; Fehlercodes)</h2>
+      </div>
+      <ul class="brands" style="grid-template-columns:repeat(5,1fr)">
+        <li><a class="brand-tile" href="https://www.viessmann.de/de/hilfe-service.html" target="_blank" rel="noopener noreferrer">Viessmann</a></li>
+        <li><a class="brand-tile" href="https://www.vaillant.de/heizung/service/" target="_blank" rel="noopener noreferrer">Vaillant</a></li>
+        <li><a class="brand-tile" href="https://www.bosch-homecomfort.com/de/de/wohngebaeude/service/" target="_blank" rel="noopener noreferrer">Bosch</a></li>
+        <li><a class="brand-tile" href="https://www.buderus.de/de/service" target="_blank" rel="noopener noreferrer">Buderus</a></li>
+        <li><a class="brand-tile" href="https://www.junkers-bosch.de/" target="_blank" rel="noopener noreferrer">Junkers</a></li>
+        <li><a class="brand-tile" href="https://www.wolf.eu/de-de/service" target="_blank" rel="noopener noreferrer">Wolf</a></li>
+        <li><a class="brand-tile" href="https://www.broetje.de/service/" target="_blank" rel="noopener noreferrer">Brötje</a></li>
+        <li><a class="brand-tile" href="https://www.weishaupt.de/kundendienst" target="_blank" rel="noopener noreferrer">Weishaupt</a></li>
+        <li><a class="brand-tile" href="https://www.daikin.de/de_de/kundendienst.html" target="_blank" rel="noopener noreferrer">Daikin</a></li>
+        <li><a class="brand-tile" href="https://www.stiebel-eltron.de/de/home/service.html" target="_blank" rel="noopener noreferrer">Stiebel Eltron</a></li>
+      </ul>
+      <p class="gallery__note">Diese Seite ist nicht öffentlich verlinkt und wird nicht von Suchmaschinen indexiert (nur für interne Nutzung). Die Links führen zu den offiziellen Hersteller-Serviceseiten — die genauen Ziele könnt ihr jederzeit anpassen lassen.</p>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <span class="brand brand--footer"><span class="brand__text"><strong>G-Therm</strong> Haustechnik</span></span>
+        <p>Interne Service-Seite fürs Team.</p>
+      </div>
+      <div class="footer__col">
+        <h4>Schnellzugriff</h4>
+        <ul>
+          <li><a href="index.html">Startseite</a></li>
+          <li><a href="kundendienst.html">Kundendienst-Anfrage</a></li>
+          <li><a href="notdienst.html">Notdienst</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h4>Kontakt</h4>
+        <ul>
+          <li><a href="tel:+4923454461855">0234 - 544 618 55</a></li>
+          <li><a href="mailto:info@g-therm.de">info@g-therm.de</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <div class="container footer__bottom-inner">
+        <span>© <span id="year">2026</span> G-Therm Haustechnik · Inh. Musa Güldes · interne Seite</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    (function () {
+      var btn = document.getElementById('mSearch');
+      if (!btn) return;
+      function run() {
+        var h = document.getElementById('mHersteller').value.trim();
+        var c = document.getElementById('mCode').value.trim();
+        if (!c) { document.getElementById('mCode').focus(); return; }
+        var q = (h ? h + ' ' : '') + 'Fehlercode ' + c + ' Störung Bedeutung Behebung';
+        window.open('https://www.google.com/search?q=' + encodeURIComponent(q), '_blank', 'noopener');
+      }
+      btn.addEventListener('click', run);
+      document.getElementById('mCode').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') { e.preventDefault(); run(); }
+      });
+    })();
+  </script>
+</body>
+</html>

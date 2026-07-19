@@ -102,6 +102,9 @@
       kategorie: form.kategorie.value,
       notfall: form.notfall.checked,
       beschreibung: form.beschreibung.value.trim(),
+      hersteller: form.hersteller.value,
+      modell: form.modell.value.trim(),
+      fehlercode: form.fehlercode.value.trim(),
       name: form.name.value.trim(),
       telefon: form.telefon.value.trim(),
       email: form.email.value.trim(),
@@ -125,6 +128,9 @@
       Bereich: payload.kategorie,
       Notfall: payload.notfall ? 'Ja' : 'Nein',
       Beschreibung: payload.beschreibung,
+      Hersteller: payload.hersteller || 'unbekannt',
+      'Modell / Typ': payload.modell || '-',
+      Fehlercode: payload.fehlercode || '-',
       Name: payload.name,
       Telefon: payload.telefon,
       email: payload.email,
@@ -156,6 +162,9 @@
         'Bereich: ' + payload.kategorie + '\n' +
         'Notfall: ' + (payload.notfall ? 'Ja' : 'Nein') + '\n\n' +
         'Beschreibung:\n' + payload.beschreibung + '\n\n' +
+        'Hersteller: ' + (payload.hersteller || 'unbekannt') + '\n' +
+        'Modell/Typ: ' + (payload.modell || '-') + '\n' +
+        'Fehlercode: ' + (payload.fehlercode || '-') + '\n\n' +
         'Name: ' + payload.name + '\nTelefon: ' + payload.telefon + '\nE-Mail: ' + payload.email + '\n' +
         'PLZ/Ort: ' + payload.plz + ' ' + payload.ort + '\nErreichbar: ' + payload.rueckruf + '\n\n' +
         '(Hinweis: Fotos konnten per E-Mail nicht automatisch angehängt werden.)'
