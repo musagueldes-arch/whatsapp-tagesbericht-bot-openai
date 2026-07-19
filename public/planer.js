@@ -19,25 +19,29 @@
   var UEB_SUF = ' — Sanpress (Rotguss) o. verzinkt';
   var CATALOG = [
     { group: 'Vaillant Wärmepumpe', items: [
-      { id: 'arotherm', name: 'aroTHERM plus', sub: 'Außeneinheit · R290',
-        kind: 'wp-out', w: 1.10, d: 0.44, h: 0.97, color: '#1c6a99', r290: true,
+      { id: 'arotherm', name: 'aroTHERM plus 35/55/75', sub: 'Außeneinheit · R290 · 1,10 × 0,45 m · H 0,97 m',
+        kind: 'wp-out', w: 1.10, d: 0.45, h: 0.97, color: '#1c6a99', r290: true,
         ports: ['VL', 'RL'], fitting: { gewinde: 'G 1¼"', sys: '28 mm' },
         anbinde: [{ n: 2, name: UEB + ' 28 × G 1¼" AG' + UEB_SUF }] },
-      { id: 'unitower', name: 'uniTOWER', sub: 'Inneneinheit',
-        kind: 'wp-in', w: 0.60, d: 0.69, h: 1.87, color: '#123e5c',
+      { id: 'arotherm-l', name: 'aroTHERM plus 105/125', sub: 'Außeneinheit · R290 · 1,10 × 0,45 m · H 1,57 m',
+        kind: 'wp-out', w: 1.10, d: 0.45, h: 1.57, color: '#15577f', r290: true,
+        ports: ['VL', 'RL'], fitting: { gewinde: 'G 1¼"', sys: '35 mm' },
+        anbinde: [{ n: 2, name: UEB + ' 35 × G 1¼" AG' + UEB_SUF }] },
+      { id: 'unitower', name: 'uniTOWER', sub: 'Inneneinheit · 0,60 × 0,69 m · H 1,88 m · 190 l WW',
+        kind: 'wp-in', w: 0.595, d: 0.693, h: 1.88, color: '#123e5c',
         ports: ['VL', 'RL'], fitting: { gewinde: 'G 1"', sys: '28 mm' },
         anbinde: [{ n: 2, name: UEB + ' 28 × G 1" AG' + UEB_SUF }] }
     ]},
-    { group: 'Buderus Wärmepumpe', items: [
-      { id: 'wlw186-ar-s', name: 'WLW186i AR 4–7', sub: 'Außeneinheit · R290 · H ca. 0,75 m',
-        kind: 'wp-out', w: 1.12, d: 0.46, h: 0.75, color: '#1c6a99', r290: true,
+    { group: 'Buderus WLW186i AR', items: [
+      { id: 'wlw186-ar-s', name: 'WLW-4/5/7 MB AR', sub: 'Außeneinheit · R290 · 1,10 × 0,54 m · H 0,80 m',
+        kind: 'wp-out', w: 1.10, d: 0.54, h: 0.80, color: '#1c6a99', r290: true,
         ports: ['VL', 'RL'], fitting: { gewinde: 'G 1¼"', sys: '28 mm' },
         anbinde: [{ n: 2, name: UEB + ' 28 × G 1¼" AG' + UEB_SUF }] },
-      { id: 'wlw186-ar-l', name: 'WLW186i AR 10/12', sub: 'Außeneinheit · R290 · H ca. 1,08 m',
-        kind: 'wp-out', w: 1.12, d: 0.46, h: 1.08, color: '#15577f', r290: true,
+      { id: 'wlw186-ar-l', name: 'WLW-10/12 MB AR', sub: 'Außeneinheit · R290 · 1,35 × 0,54 m · H 1,10 m',
+        kind: 'wp-out', w: 1.35, d: 0.54, h: 1.10, color: '#15577f', r290: true,
         ports: ['VL', 'RL'], fitting: { gewinde: 'G 1¼"', sys: '35 mm' },
         anbinde: [{ n: 2, name: UEB + ' 35 × G 1¼" AG' + UEB_SUF }] },
-      { id: 't180', name: 'Logatherm T180', sub: 'Inneneinheit · 0,60 × 0,60 m · H 1,78 m',
+      { id: 't180', name: 'Logatherm T180', sub: 'Inneneinheit · 0,60 × 0,60 m · H 1,78 m · 170 l WW',
         kind: 'wp-in', w: 0.60, d: 0.60, h: 1.78, color: '#123e5c',
         ports: ['VL', 'RL'], fitting: { gewinde: 'G 1"', sys: '28 mm' },
         anbinde: [{ n: 2, name: UEB + ' 28 × G 1" AG' + UEB_SUF }] }
