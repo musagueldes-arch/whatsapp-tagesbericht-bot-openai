@@ -92,7 +92,8 @@
           </div>
         </div>
         <button type="button" class="btn btn--accent" id="mSearch"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-search"/></svg> Fehlercode nachschlagen</button>
-        <p class="wp-check__note">Öffnet eine Websuche „Hersteller + Fehlercode + Störung" in einem neuen Tab. Für verbindliche Angaben (Bedeutung, Behebung) bitte die offizielle Hersteller-Dokumentation unten verwenden.</p>
+        <div class="fc-result" id="mResult" aria-live="polite" hidden></div>
+        <p class="wp-check__note">Zeigt die Bedeutung direkt hier an (Auswahl häufiger Codes der Hauptmarken). Für verbindliche Angaben und weitere Codes die offizielle Hersteller-Dokumentation unten verwenden.</p>
       </div>
 
       <!-- Hersteller-Portale -->
@@ -147,21 +148,55 @@
   </footer>
 
   <script src="script.js"></script>
+  <script src="fehlercodes.js"></script>
   <script>
     (function () {
       var btn = document.getElementById('mSearch');
-      if (!btn) return;
-      function run() {
-        var h = document.getElementById('mHersteller').value.trim();
-        var c = document.getElementById('mCode').value.trim();
-        if (!c) { document.getElementById('mCode').focus(); return; }
-        var q = (h ? h + ' ' : '') + 'Fehlercode ' + c + ' Störung Bedeutung Behebung';
-        window.open('https://www.google.com/search?q=' + encodeURIComponent(q), '_blank', 'noopener');
+      var sel = document.getElementById('mHersteller');
+      var inp = document.getElementById('mCode');
+      var out = document.getElementById('mResult');
+      if (!btn || !sel || !inp || !out || !window.GThermFehlercodes) return;
+
+      function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
       }
+      var DISCLAIMER = '<p class="fc-disclaimer">Auswahl häufiger Codes, ohne Gewähr — verbindlich sind die Angaben des Herstellers.</p>';
+      function quelleLink(q, label) {
+        return '<a href="' + esc(q.url) + '" target="_blank" rel="noopener noreferrer">' + esc(label || q.name) + '</a>';
+      }
+      function info(html) { return '<div class="fc-info">' + html + '</div>'; }
+
+      function run() {
+        var brand = sel.value;
+        var code = inp.value.trim();
+        var res = window.GThermFehlercodes.lookup(brand, code);
+
+        if (res.status === 'empty') { inp.focus(); out.hidden = true; out.innerHTML = ''; return; }
+        out.hidden = false;
+
+        if (res.status === 'no-brand') {
+          out.innerHTML = info('Bitte oben einen Hersteller wählen, um in der Kurzliste zu suchen.');
+        } else if (res.status === 'brand-not-listed') {
+          out.innerHTML = info('Für <strong>' + esc(brand) + '</strong> ist noch keine Kurzliste hinterlegt. Bitte die offiziellen Hersteller-Serviceportale unten nutzen.');
+        } else if (res.status === 'found') {
+          out.innerHTML =
+            '<div class="fc-card">' +
+              '<span class="fc-card__code">' + esc(brand) + ' · ' + esc(res.code) + '</span>' +
+              '<h3 class="fc-card__title">' + esc(res.bedeutung) + '</h3>' +
+              '<p class="fc-card__hint">' + esc(res.hinweis) + '</p>' +
+              '<p class="fc-card__src">Mehr beim Hersteller: ' + quelleLink(res.quelle) + '</p>' +
+              '<a class="btn btn--accent" href="kundendienst.html">Störung an G-Therm melden</a>' +
+            '</div>' + DISCLAIMER;
+        } else { // not-found
+          out.innerHTML = info('Zu „<strong>' + esc(code) + '</strong>" ist in unserer Kurzliste (' + esc(brand) + ') kein Eintrag hinterlegt. ' +
+            'Offizielle Quelle: ' + quelleLink(res.quelle, res.quelle.name) + '.') + DISCLAIMER;
+        }
+      }
+
       btn.addEventListener('click', run);
-      document.getElementById('mCode').addEventListener('keydown', function (e) {
-        if (e.key === 'Enter') { e.preventDefault(); run(); }
-      });
+      inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); run(); } });
     })();
   </script>
 </body>

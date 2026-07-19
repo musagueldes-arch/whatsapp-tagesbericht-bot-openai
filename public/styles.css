@@ -470,6 +470,18 @@ p { margin: 0 0 1rem; }
 .wp-check__fallback p { margin: 0 0 12px; color: var(--muted); }
 .wp-check__actions { display: flex; gap: 12px; flex-wrap: wrap; }
 
+/* Fehlercode-Inline-Ergebnis (interne Service-Seite) --------------------- */
+.fc-result { margin-top: 16px; }
+.fc-card { background: var(--mist); border: 1px solid var(--line); border-left: 4px solid var(--copper); border-radius: var(--radius); padding: 18px 20px; }
+.fc-card__code { display: inline-block; font-weight: 800; font-size: .78rem; letter-spacing: .04em; color: #fff; background: var(--copper); padding: 4px 10px; border-radius: 999px; }
+.fc-card__title { margin: 12px 0 .2em; font-size: 1.18rem; }
+.fc-card__hint { color: var(--muted); margin: 0 0 12px; }
+.fc-card__src { font-size: .88rem; color: var(--muted); margin: 0 0 14px; }
+.fc-card__src a { color: var(--steel); text-decoration: underline; }
+.fc-info { background: var(--mist); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 18px; color: var(--ink); }
+.fc-info a { color: var(--copper); text-decoration: underline; }
+.fc-disclaimer { font-size: .8rem; color: var(--muted); font-style: italic; margin: 10px 2px 0; }
+
 /* Wärmepumpen-Konfigurator: Optionskarten & Ergebnis --------------------- */
 .optgrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
 .optcard { position: relative; }
