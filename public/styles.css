@@ -481,6 +481,8 @@ p { margin: 0 0 1rem; }
 .fc-info { background: var(--mist); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 18px; color: var(--ink); }
 .fc-info a { color: var(--copper); text-decoration: underline; }
 .fc-disclaimer { font-size: .8rem; color: var(--muted); font-style: italic; margin: 10px 2px 0; }
+.kd-frei { margin-top: 8px; }
+.fc-inline { margin: -6px 0 4px; font-size: .92rem; font-weight: 600; color: var(--copper-600); }
 
 /* Wärmepumpen-Konfigurator: Optionskarten & Ergebnis --------------------- */
 .optgrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }

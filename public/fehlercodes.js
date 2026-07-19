@@ -13,6 +13,15 @@
     'A01': { bedeutung: 'Kritische Abgastemperatur überschritten', hinweis: 'Sofort Fachbetrieb hinzuziehen — nicht selbst weiter versuchen.' }
   };
 
+  // Gängige Modelle/Serien je Marke (Auswahl; „Anderes" erlaubt Freitext im Formular)
+  var MODELLE = {
+    'Vaillant':  ['ecoTEC plus', 'ecoTEC pro', 'ecoTEC exclusive', 'atmoTEC plus', 'aroTHERM plus (Wärmepumpe)', 'flexoTHERM'],
+    'Viessmann': ['Vitodens 050-W', 'Vitodens 100-W', 'Vitodens 200-W', 'Vitodens 300-W', 'Vitocal 200-S (Wärmepumpe)', 'Vitocal 250-A (Wärmepumpe)', 'Vitocrossal'],
+    'Bosch':     ['Condens 2000 W', 'Condens 7000i W', 'Condens 9000i W', 'Compress (Wärmepumpe)'],
+    'Buderus':   ['Logamax plus GB172', 'Logamax plus GB182', 'Logamax plus GB192i', 'Logatherm WLW (Wärmepumpe)'],
+    'Wolf':      ['CGB-2 (Gasbrennwert)', 'CGW-2', 'CGG-2', 'MGK-2', 'FGB', 'CHA (Wärmepumpe)']
+  };
+
   var DB = {
     'Vaillant': {
       quelle: { name: 'vaillant.de', url: 'https://www.vaillant.de/service/reparatur/fehlercodes-gasheizung/' },
@@ -59,6 +68,12 @@
   });
 
   window.GThermFehlercodes = {
+    getModelle: function (brand) { return MODELLE[brand] ? MODELLE[brand].slice() : []; },
+    getCodes: function (brand) {
+      var b = DB[brand];
+      if (!b) return [];
+      return Object.keys(b.codes).map(function (k) { return { code: k, bedeutung: b.codes[k].bedeutung }; });
+    },
     lookup: function (brand, code) {
       if (!brand) return { status: 'no-brand' };
       var b = DB[brand];
