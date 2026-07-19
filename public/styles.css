@@ -367,6 +367,10 @@ p { margin: 0 0 1rem; }
 .form-status { margin: 14px 0 0; font-weight: 600; font-size: .95rem; min-height: 1.2em; }
 .form-status.ok { color: #1f8b4c; }
 .form-status.err { color: var(--copper-600); }
+.form-status--info { color: var(--ink); font-weight: 500; background: var(--mist); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; }
+.form-status--info strong { color: var(--navy-900); }
+.form-status__actions { display: flex; gap: 10px; flex-wrap: wrap; margin: 12px 0 2px; }
+.form-status__hint { display: block; color: var(--muted); font-size: .86rem; font-weight: 400; margin-top: 8px; }
 
 /* Footer ----------------------------------------------------------------- */
 .footer { background: var(--navy-900); color: #aec6d6; padding-top: 58px; }
