@@ -141,10 +141,14 @@
         'PLZ/Ort: ' + payload.plz + ' ' + payload.ort + '\nErreichbar: ' + payload.rueckruf + '\n\n' +
         '(Hinweis: Fotos konnten per E-Mail nicht automatisch angehängt werden.)'
       );
-      status.className = 'form-status err';
-      status.innerHTML = 'Online-Versand momentan nicht möglich. ' +
-        '<a href="mailto:info@g-therm.de?subject=' + subject + '&body=' + body + '">Anfrage per E-Mail senden</a> ' +
-        'oder rufen Sie uns an: <a href="tel:+4923454461855">0234 - 544 618 55</a>.';
+      status.className = 'form-status form-status--info';
+      status.innerHTML =
+        '<strong>Fast geschafft!</strong> Ihre Anfrage ist fertig vorbereitet — senden Sie sie mit einem Klick per E-Mail an uns, oder rufen Sie kurz an.' +
+        '<span class="form-status__actions">' +
+          '<a class="btn btn--accent" href="mailto:info@g-therm.de?subject=' + subject + '&body=' + body + '">Als E-Mail senden</a>' +
+          '<a class="btn btn--ghost" href="tel:+4923454461855"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-phone"/></svg> 0234 - 544 618 55</a>' +
+        '</span>' +
+        '<span class="form-status__hint">Ihr E-Mail-Programm öffnet sich mit allen Angaben — bitte nur noch abschicken. Fotos hängen Sie dort bei Bedarf direkt an.</span>';
     });
   });
 })();
