@@ -95,8 +95,9 @@
 
   // ── Zustand ───────────────────────────────────────────────────────────────
   var STORE_KEY = 'gtherm_planer_v1';
-  var state = { rooms: [], parts: [], pipes: [], nextId: 1 };
-  var tool = 'select';           // 'select' | 'room' | 'pipe'
+  var state = { rooms: [], parts: [], pipes: [], walls: [], nextId: 1 };
+  var tool = 'select';           // 'select' | 'room' | 'pipe' | 'wall'
+  var WALL_T = 0.24;             // Wandstärke (m)
   var view = '2d';               // '2d' | '3d'
   var selection = null;          // { kind:'room'|'part'|'pipe', id }
   var snap = true;
@@ -123,7 +124,7 @@
       var raw = localStorage.getItem(STORE_KEY);
       if (raw) {
         var s = JSON.parse(raw);
-        if (s && s.rooms && s.parts) { state = s; state.nextId = s.nextId || 1; state.pipes = s.pipes || []; return true; }
+        if (s && s.rooms && s.parts) { state = s; state.nextId = s.nextId || 1; state.pipes = s.pipes || []; state.walls = s.walls || []; return true; }
       }
     } catch (e) {}
     return false;
@@ -189,6 +190,7 @@
     function acc(x, y, w, d) { has = true; minx = Math.min(minx, x); miny = Math.min(miny, y); maxx = Math.max(maxx, x + w); maxy = Math.max(maxy, y + d); }
     state.rooms.forEach(function (r) { acc(r.x, r.y, r.w, r.d); });
     state.parts.forEach(function (p) { var s = partSize(p); acc(p.x, p.y, s.w, s.d); });
+    state.walls.forEach(function (w) { acc(Math.min(w.x1, w.x2), Math.min(w.y1, w.y2), Math.abs(w.x2 - w.x1), Math.abs(w.y2 - w.y1)); });
     if (!has) return { minx: 0, miny: 0, maxx: 8, maxy: 6 };
     return { minx: minx, miny: miny, maxx: maxx, maxy: maxy };
   }
@@ -237,55 +239,95 @@
     }
     return null;
   }
+  // Wände: Endpunkt-Fang (Ecken verbinden) + Treffer
+  function wallEndpoints() {
+    var out = [];
+    state.walls.forEach(function (w) { out.push({ x: w.x1, y: w.y1 }); out.push({ x: w.x2, y: w.y2 }); });
+    return out;
+  }
+  function snapPoint(wx, wy) {
+    var best = null, bd = 0.30;
+    wallEndpoints().forEach(function (e) { var dd = Math.hypot(e.x - wx, e.y - wy); if (dd < bd) { bd = dd; best = e; } });
+    if (best) return { x: best.x, y: best.y };
+    return { x: snapVal(wx), y: snapVal(wy) };
+  }
+  function wallHitTest(wx, wy) {
+    for (var i = state.walls.length - 1; i >= 0; i--) {
+      var w = state.walls[i];
+      if (distToSeg(wx, wy, w.x1, w.y1, w.x2, w.y2) < (w.t || WALL_T) / 2 + 0.06) return { kind: 'wall', id: w.id, obj: w };
+    }
+    return null;
+  }
+  function wallLen(w) { return Math.hypot(w.x2 - w.x1, w.y2 - w.y1); }
 
   // ── 2D-Rendering ────────────────────────────────────────────────────────────
   function clear() { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, canvas.width, canvas.height); }
 
   function drawGrid() {
-    var step = 0.5 * scale;
-    if (step < 8) step = 1 * scale;
+    var minor = 0.5; // m
+    if (minor * scale < 9) minor = 1;
+    var tl = s2w(0, 0), br = s2w(canvas.width, canvas.height);
     ctx.save();
-    ctx.strokeStyle = '#e7eef3'; ctx.lineWidth = 1;
-    var ox = pan.x % step, oy = pan.y % step;
-    for (var x = ox; x < canvas.width; x += step) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke(); }
-    for (var y = oy; y < canvas.height; y += step) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke(); }
+    var startX = Math.floor(tl.x / minor) * minor, startY = Math.floor(tl.y / minor) * minor;
+    for (var wx = startX; wx <= br.x; wx += minor) {
+      var sx = w2s(wx, 0).x, major = Math.abs(wx - Math.round(wx)) < 1e-6;
+      ctx.beginPath(); ctx.moveTo(sx, 0); ctx.lineTo(sx, canvas.height);
+      ctx.strokeStyle = major ? '#d5e0e8' : '#eef3f6'; ctx.lineWidth = 1; ctx.stroke();
+    }
+    for (var wy = startY; wy <= br.y; wy += minor) {
+      var sy = w2s(0, wy).y, majorY = Math.abs(wy - Math.round(wy)) < 1e-6;
+      ctx.beginPath(); ctx.moveTo(0, sy); ctx.lineTo(canvas.width, sy);
+      ctx.strokeStyle = majorY ? '#d5e0e8' : '#eef3f6'; ctx.lineWidth = 1; ctx.stroke();
+    }
     ctx.restore();
+  }
+
+  // Bemaßung: Maßtext an einer Kante/Strecke
+  function dimLabel(ax, ay, bx, by, off) {
+    var mx = (ax + bx) / 2, my = (ay + by) / 2;
+    var len = Math.hypot(bx - ax, by - ay);
+    if (len < 0.15) return;
+    var nx = -(by - ay) / len, ny = (bx - ax) / len; // Normale
+    var s = w2s(mx + nx * off, my + ny * off);
+    ctx.save();
+    ctx.font = '600 11px "Segoe UI", system-ui, sans-serif';
+    ctx.fillStyle = '#6b7a86'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    var txt = len.toLocaleString('de-DE', { maximumFractionDigits: 2 }) + ' m';
+    var tw = ctx.measureText(txt).width;
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    ctx.fillRect(s.x - tw / 2 - 3, s.y - 8, tw + 6, 16);
+    ctx.fillStyle = '#4a5b67'; ctx.fillText(txt, s.x, s.y);
+    ctx.restore();
+  }
+
+  function drawWall(w, sel) {
+    var a = w2s(w.x1, w.y1), b = w2s(w.x2, w.y2);
+    var tpx = Math.max(4, (w.t || WALL_T) * scale);
+    ctx.save();
+    ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+    ctx.strokeStyle = sel ? '#0a2c42' : '#6f7b84'; ctx.lineWidth = tpx + 2; ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+    ctx.strokeStyle = sel ? '#9fb4c4' : '#c7d0d6'; ctx.lineWidth = tpx; ctx.stroke();
+    ctx.restore();
+    dimLabel(w.x1, w.y1, w.x2, w.y2, (w.t || WALL_T) / 2 + 0.18);
   }
 
   function render2D() {
     clear();
     drawGrid();
-    // Räume
-    state.rooms.forEach(function (r) {
-      var a = w2s(r.x, r.y);
-      var wpx = r.w * scale, dpx = r.d * scale;
-      ctx.fillStyle = ROOM_FILL;
-      ctx.strokeStyle = isSel('room', r.id) ? '#0a2c42' : ROOM_LINE;
-      ctx.lineWidth = isSel('room', r.id) ? 2.5 : 1.5;
-      ctx.fillRect(a.x, a.y, wpx, dpx);
-      ctx.strokeRect(a.x, a.y, wpx, dpx);
-      // Beschriftung
-      ctx.fillStyle = '#0a2c42';
-      ctx.font = '700 13px "Segoe UI", system-ui, sans-serif';
-      ctx.textBaseline = 'top';
-      ctx.fillText(r.name || 'Raum', a.x + 6, a.y + 5);
-      ctx.fillStyle = '#566672';
-      ctx.font = '12px "Segoe UI", system-ui, sans-serif';
-      var area = roomAreaM2(r);
-      ctx.fillText(area.toLocaleString('de-DE', { maximumFractionDigits: 1 }) + ' m²', a.x + 6, a.y + 22);
-      var load = roomLoadKW(r);
-      if (load != null) {
-        ctx.fillStyle = '#bd4a14';
-        ctx.font = '700 12px "Segoe UI", system-ui, sans-serif';
-        ctx.fillText('≈ ' + load.toLocaleString('de-DE', { maximumFractionDigits: 1 }) + ' kW', a.x + 6, a.y + 38);
-      }
-    });
+    // Räume (Architektur-Darstellung)
+    state.rooms.forEach(function (r) { drawRoom2D(r); });
+    // Freie Wände
+    state.walls.forEach(function (w) { drawWall(w, isSel('wall', w.id)); });
     // Leitungen (unter den Bauteilen)
     state.pipes.forEach(function (pipe) { drawPipe2D(pipe, false); });
     // Bauteile
     state.parts.forEach(function (p) { drawPart2D(p); });
     // Leitungs-Vorschau beim Zeichnen
     if (drag && drag.mode === 'pipe' && drag.preview) drawPipe2D(drag.preview, true);
+    // Wand-Vorschau
+    if (drag && drag.mode === 'wall' && drag.end) drawWall({ x1: drag.a.x, y1: drag.a.y, x2: drag.end.x, y2: drag.end.y, t: WALL_T }, true);
     // Temporäres Raum-Rechteck
     if (drag && drag.mode === 'newroom' && drag.rect) {
       var rr = drag.rect, s = w2s(rr.x, rr.y);
@@ -294,6 +336,37 @@
       ctx.strokeStyle = '#1c6a99'; ctx.lineWidth = 1.8;
       ctx.strokeRect(s.x, s.y, rr.w * scale, rr.d * scale);
       ctx.restore();
+    }
+  }
+
+  function drawRoom2D(r) {
+    var a = w2s(r.x, r.y), wpx = r.w * scale, dpx = r.d * scale;
+    var sel = isSel('room', r.id), tpx = Math.max(4, WALL_T * scale);
+    // Boden
+    ctx.fillStyle = ROOM_FILL;
+    ctx.fillRect(a.x, a.y, wpx, dpx);
+    // Wandband (auf der Kante zentriert)
+    ctx.save();
+    ctx.lineJoin = 'miter';
+    ctx.strokeStyle = sel ? '#0a2c42' : '#6f7b84'; ctx.lineWidth = tpx + 2; ctx.strokeRect(a.x, a.y, wpx, dpx);
+    ctx.strokeStyle = sel ? '#9fb4c4' : '#c7d0d6'; ctx.lineWidth = tpx; ctx.strokeRect(a.x, a.y, wpx, dpx);
+    ctx.restore();
+    // Bemaßung Breite (oben) & Tiefe (links)
+    dimLabel(r.x, r.y, r.x + r.w, r.y, -(WALL_T / 2 + 0.22));
+    dimLabel(r.x, r.y, r.x, r.y + r.d, -(WALL_T / 2 + 0.22));
+    // Beschriftung
+    ctx.fillStyle = '#0a2c42';
+    ctx.font = '700 13px "Segoe UI", system-ui, sans-serif';
+    ctx.textBaseline = 'top'; ctx.textAlign = 'left';
+    ctx.fillText(r.name || 'Raum', a.x + tpx / 2 + 5, a.y + tpx / 2 + 4);
+    ctx.fillStyle = '#566672';
+    ctx.font = '12px "Segoe UI", system-ui, sans-serif';
+    ctx.fillText(roomAreaM2(r).toLocaleString('de-DE', { maximumFractionDigits: 1 }) + ' m²', a.x + tpx / 2 + 5, a.y + tpx / 2 + 21);
+    var load = roomLoadKW(r);
+    if (load != null) {
+      ctx.fillStyle = '#bd4a14';
+      ctx.font = '700 12px "Segoe UI", system-ui, sans-serif';
+      ctx.fillText('≈ ' + load.toLocaleString('de-DE', { maximumFractionDigits: 1 }) + ' kW', a.x + tpx / 2 + 5, a.y + tpx / 2 + 37);
     }
   }
 
@@ -531,7 +604,7 @@
   function isSel(kind, id) { return selection && selection.kind === kind && selection.id === id; }
   function selectedObj() {
     if (!selection) return null;
-    var arr = selection.kind === 'room' ? state.rooms : selection.kind === 'pipe' ? state.pipes : state.parts;
+    var arr = selection.kind === 'room' ? state.rooms : selection.kind === 'pipe' ? state.pipes : selection.kind === 'wall' ? state.walls : state.parts;
     for (var i = 0; i < arr.length; i++) if (arr[i].id === selection.id) return arr[i];
     return null;
   }
@@ -543,6 +616,8 @@
     }
     var ph = pipeHitTest(wx, wy);
     if (ph) return ph;
+    var wh = wallHitTest(wx, wy);
+    if (wh) return wh;
     for (var j = state.rooms.length - 1; j >= 0; j--) {
       var r = state.rooms[j];
       if (wx >= r.x && wx <= r.x + r.w && wy >= r.y && wy <= r.y + r.d) return { kind: 'room', id: r.id, obj: r };
@@ -598,7 +673,23 @@
     if (!obj) { host.innerHTML = '<p class="props__empty">Kein Element ausgewählt. Tippe einen Raum, ein Bauteil oder eine Leitung an.</p>'; return; }
     if (selection.kind === 'room') renderRoomProps(host, obj);
     else if (selection.kind === 'pipe') renderPipeProps(host, obj);
+    else if (selection.kind === 'wall') renderWallProps(host, obj);
     else renderPartProps(host, obj);
+  }
+
+  function renderWallProps(host, w) {
+    host.innerHTML =
+      '<div class="props__head"><span class="props__dot" style="background:#c7d0d6;border-color:#6f7b84"></span>' +
+        '<span class="props__name">Wand</span></div>' +
+      '<p class="props__meta">Länge <strong>' + wallLen(w).toLocaleString('de-DE', { maximumFractionDigits: 2 }) + ' m</strong></p>' +
+      field('Wandstärke (m)', '<input type="number" id="pf-wt" min="0.06" step="0.01" value="' + (w.t || WALL_T) + '" />') +
+      '<p class="hint-line">Werkzeug „Wand" wählen und ziehen; Endpunkte rasten an bestehende Ecken ein – so entsteht der Grundriss.</p>' +
+      '<div class="props__actions">' +
+        '<button type="button" class="mini-btn mini-btn--danger" id="pf-del"><svg class="ico"><use href="#i-trash"/></svg> Löschen</button>' +
+      '</div>';
+    var wt = document.getElementById('pf-wt');
+    if (wt) wt.addEventListener('input', function () { var v = parseFloat(wt.value); if (v >= 0.06) { w.t = v; save(); render(); } });
+    delBtn();
   }
 
   function renderPipeProps(host, pipe) {
@@ -735,6 +826,7 @@
     if (!selection) return;
     if (selection.kind === 'room') state.rooms = state.rooms.filter(function (r) { return r.id !== selection.id; });
     else if (selection.kind === 'pipe') state.pipes = state.pipes.filter(function (p) { return p.id !== selection.id; });
+    else if (selection.kind === 'wall') state.walls = state.walls.filter(function (w) { return w.id !== selection.id; });
     else state.parts = state.parts.filter(function (p) { return p.id !== selection.id; });
     selection = null;
     save(); render(); renderProps(); renderBom();
@@ -823,9 +915,13 @@
       drag = { mode: 'pipe', a: sp ? { x: sp.x, y: sp.y } : { x: snapVal(w.x), y: snapVal(w.y) }, end: null, preview: null };
       return;
     }
+    if (tool === 'wall') {
+      drag = { mode: 'wall', a: snapPoint(w.x, w.y), end: null };
+      return;
+    }
     var hit = hitTest(w.x, w.y);
-    if (hit && hit.kind === 'pipe') {
-      selection = { kind: 'pipe', id: hit.id }; drag = null; renderProps(); render(); return;
+    if (hit && (hit.kind === 'pipe' || hit.kind === 'wall')) {
+      selection = { kind: hit.kind, id: hit.id }; drag = null; renderProps(); render(); return;
     }
     if (hit) {
       selection = { kind: hit.kind, id: hit.id };
@@ -849,6 +945,9 @@
       var ep = nearestPort(w.x, w.y, 0.45);
       drag.end = ep ? { x: ep.x, y: ep.y } : { x: snapVal(w.x), y: snapVal(w.y) };
       drag.preview = { pts: routePipe(drag.a, drag.end), color: PIPE_MAT[pipeMaterial].color };
+      render();
+    } else if (drag.mode === 'wall') {
+      drag.end = snapPoint(w.x, w.y);
       render();
     } else if (drag.mode === 'move') {
       var obj = (drag.kind === 'room' ? state.rooms : state.parts).filter(function (o) { return o.id === drag.id; })[0];
@@ -875,6 +974,14 @@
         var pipe = { id: id(), type: 'pipe', pts: pts, material: pipeMaterial, color: PIPE_MAT[pipeMaterial].color };
         state.pipes.push(pipe);
         selection = { kind: 'pipe', id: pipe.id };
+        renderProps();
+      }
+    }
+    if (drag.mode === 'wall' && drag.end) {
+      if (Math.hypot(drag.end.x - drag.a.x, drag.end.y - drag.a.y) > 0.2) {
+        var wl = { id: id(), type: 'wall', x1: drag.a.x, y1: drag.a.y, x2: drag.end.x, y2: drag.end.y, t: WALL_T };
+        state.walls.push(wl);
+        selection = { kind: 'wall', id: wl.id };
         renderProps();
       }
     }

@@ -89,7 +89,8 @@
         <aside class="planer__side planer__side--left" aria-label="Werkzeuge und Bauteile">
           <div class="tool-row" role="toolbar" aria-label="Werkzeuge">
             <button type="button" class="tool is-active" data-tool="select">Auswählen</button>
-            <button type="button" class="tool" data-tool="room">Raum aufziehen</button>
+            <button type="button" class="tool" data-tool="wall">Wand</button>
+            <button type="button" class="tool" data-tool="room">Raum</button>
             <button type="button" class="tool" data-tool="pipe">Leitung</button>
           </div>
           <button type="button" class="btn btn--accent btn--sm btn--block add-room" id="addRoomBtn">+ Raum hinzufügen</button>
@@ -104,10 +105,10 @@
 
           <div class="palette" id="palette" aria-label="Bauteile"></div>
 
-          <p class="palette__hint">Am einfachsten: <strong>„+ Raum"</strong> tippen, dann rechts
-            Maße &amp; W/m² eintragen. Bauteil aus der Liste antippen → landet in der Mitte.
-            <strong>Leitung</strong>: Werkzeug wählen und von einem VL/RL-Punkt zum anderen ziehen –
-            Bögen entstehen automatisch. Alles auch per Zahlen-Feld positionierbar.</p>
+          <p class="palette__hint"><strong>Grundriss:</strong> Werkzeug „Wand" wählen und Wände ziehen –
+            Ecken rasten aneinander ein, Längen werden bemaßt. <strong>Raum</strong> für Heizlast (Fläche × W/m²).
+            <strong>Leitung</strong>: von VL/RL-Punkt zu VL/RL-Punkt ziehen, Bögen automatisch.
+            Bauteil aus der Liste antippen → landet in der Mitte. Alles auch per Zahlen-Feld positionierbar.</p>
         </aside>
 
         <!-- Zeichenfläche -->
