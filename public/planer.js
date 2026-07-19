@@ -46,6 +46,22 @@
         ports: ['VL', 'RL'], fitting: { gewinde: 'G 1"', sys: '28 mm' },
         anbinde: [{ n: 2, name: UEB + ' 28 × G 1" AG' + UEB_SUF }] }
     ]},
+    { group: 'Viessmann Vitocal (R290)', items: [
+      { id: 'vitocal250a-out', name: 'Vitocal 250-A (Außeneinheit)', sub: 'Monoblock · R290 · ca. 1,14 × 0,60 m · H 1,38 m',
+        kind: 'wp-out', w: 1.14, d: 0.60, h: 1.38, color: '#1c6a99', r290: true,
+        ports: ['VL', 'RL'], fitting: { gewinde: '', sys: '28 mm (CU)' },
+        anbinde: [{ n: 2, name: 'Pressmuffe 28 mm (direkter CU-Anschluss)' }],
+        hint: 'Maße mit Vorbehalt (große 2-Lüfter-Bauform A10–A16) – am Datenblatt DB-6195458 prüfen. R290-Schutzbereich 1 m, mit gasdichter Trennwand auf 0,5 m reduzierbar.' },
+      { id: 'vitocal250a-in', name: 'Vitocal 250-A (Inneneinheit)', sub: 'Hydraulikeinheit · ca. 0,60 × 0,36 m · H 0,92 m',
+        kind: 'wp-in', w: 0.60, d: 0.36, h: 0.92, color: '#123e5c',
+        ports: ['VL', 'RL'], fitting: { gewinde: '', sys: '28 mm (CU)' },
+        anbinde: [{ n: 2, name: 'Pressmuffe 28 mm (direkter CU-Anschluss)' }] },
+      { id: 'vitocal252a', name: 'Vitocal 252-A (Kompakt, 190 l)', sub: 'Speicher-Kompakt · ca. 0,60 × 0,60 m · H 1,90 m · 190 l WW',
+        kind: 'wp-in', w: 0.60, d: 0.60, h: 1.90, color: '#123e5c',
+        ports: ['VL', 'RL'], fitting: { gewinde: 'G 1"', sys: '28 mm' },
+        anbinde: [{ n: 2, name: UEB + ' 28 × G 1" AG' + UEB_SUF }],
+        hint: 'Kompaktgerät mit 190-l-WW-Speicher; nutzt dieselbe 250-A-Außeneinheit. Anschlussgröße am Datenblatt DB-6195459 prüfen.' }
+    ]},
     { group: 'Heizflächen', items: [
       { id: 'heizkoerper', name: 'Heizkörper', sub: 'Anschluss ½" · 15 mm',
         kind: 'emitter-hk', w: 1.00, d: 0.12, h: 0.60, color: '#d9591f',
