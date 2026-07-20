@@ -14,7 +14,7 @@
   'use strict';
 
   var DATA = {
-    profilUrl: 'https://www.google.com/maps/search/?api=1&query=G-Therm+Haustechnik+Bochum',
+    profilUrl: 'https://maps.app.goo.gl/vJLrTp57ZGYrLpbF6',
     schnitt: 5.0,
     anzahl: null,
     istBeispiel: true,
