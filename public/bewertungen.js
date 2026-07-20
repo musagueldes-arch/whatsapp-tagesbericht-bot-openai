@@ -17,11 +17,16 @@
     profilUrl: 'https://maps.app.goo.gl/vJLrTp57ZGYrLpbF6',
     schnitt: 5.0,
     anzahl: null,
-    istBeispiel: true,
+    istBeispiel: false,
     liste: [
-      { stars: 5, text: 'Schnelle Terminvergabe, saubere Arbeit und faire Beratung – jederzeit wieder.', name: 'Beispiel · Bochum', datum: '' },
-      { stars: 5, text: 'Neue Heizung termingerecht und ordentlich eingebaut, sehr freundliches Team.', name: 'Beispiel · Ruhrgebiet', datum: '' },
-      { stars: 5, text: 'Beim Wasserschaden sofort da und professionell geholfen. Klare Empfehlung.', name: 'Beispiel · Bochum', datum: '' }
+      { stars: 5, text: 'Sehr kurzfristiger Heizungstausch. Ausführung 1A. Handwerker arbeiten schnell, präzise und hinterlassen den Arbeitsort sauberer als vorher. Vielen Dank noch einmal für die kurzfristige Lösung.', name: 'Andreas B.', datum: '' },
+      { stars: 5, text: 'Voll verdiente fünf Sterne! Bei einem Wasserschaden in unserem Mehrfamilienhaus hat uns die Firma G-Therm schnell, kompetent und zuverlässig geholfen! Die Kommunikation war zu jeder Zeit einwandfrei – ich kann die Firma uneingeschränkt und gerne jedem empfehlen!', name: 'Agnès E.', datum: '' },
+      { stars: 5, text: 'In Castrop-Rauxel wurde unsere alte Ölheizungsanlage fachgerecht stillgelegt und demontiert. Die Umstellung auf eine moderne Gas-Brennwertheizung erfolgte komplett an einem Tag. Sehr saubere, zuverlässige und professionelle Ausführung – uneingeschränkt weiterzuempfehlen.', name: 'Gülo T.', datum: '' },
+      { stars: 5, text: 'Wir waren in zeitlicher Not – Herr Güldes hat sich dennoch die Zeit für eine Vor-Ort-Besichtigung genommen und den Auftrag kurzfristig ausgeführt. Ein ausgezeichneter, professioneller Job, sauber gearbeitet. Jederzeit und gerne wieder!', name: 'Achim S.', datum: '' },
+      { stars: 5, text: 'Im Winter ist unsere Heizungsanlage ausgefallen. Uns wurde sofort und sehr kurzfristig geholfen und wir wurden kompetent beraten. Die alte Gasheizung wurde fachgerecht durch eine neue Gas-Brennwertheizung ersetzt. Sehr saubere und zuverlässige Arbeit.', name: 'Murat A.', datum: '' },
+      { stars: 5, text: 'Akute Notsituation – kein Gas im Haus. G-Therm Haustechnik war sehr schnell vor Ort und hat die Gasleitungen fachgerecht abgedichtet, geprüft und die Anlage sicher wieder in Betrieb genommen. Absolut empfehlenswert bei Gas-Notfällen.', name: 'Ferman Y.', datum: '' },
+      { stars: 5, text: 'Preis-Leistung unschlagbar, kundenorientiert und freundlich. Bin sehr zufrieden und kann die Firma mit bestem Gewissen weiterempfehlen. Kompletter Einbau des Kessels – schnell und unkompliziert.', name: 'S. G.', datum: '' },
+      { stars: 5, text: 'Tolle Arbeit! Sie gehen erst, wenn alles 100% erledigt und geben sich sehr viel Mühe. Klare Weiterempfehlung!', name: 'Be Motivated', datum: '' }
     ]
   };
 
