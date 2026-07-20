@@ -1,0 +1,14 @@
+# Cloudflare Worker – KI-Chat-Vermittler für G-Therm Haustechnik
+# Deploy:  cd worker && npm i -g wrangler && wrangler deploy
+# Secret:  wrangler secret put GEMINI_API_KEY   (Schlüssel aus Google AI Studio)
+name = "gtherm-chat"
+main = "gtherm-chat.js"
+compatibility_date = "2024-11-01"
+
+[vars]
+# Gemini-Modell (Free-Tier-tauglich). Bei Bedarf z. B. auf "gemini-2.0-flash" ändern.
+GEMINI_MODEL = "gemini-1.5-flash"
+# Erlaubte Website-Herkünfte (Komma-getrennt). Anpassen, sobald die Domain g-therm.de verbunden ist.
+ALLOWED_ORIGIN = "https://www.g-therm.de,https://g-therm.de,https://musagueldes-arch.github.io"
+
+# GEMINI_API_KEY wird NICHT hier gesetzt, sondern als Secret:  wrangler secret put GEMINI_API_KEY

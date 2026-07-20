@@ -12,6 +12,11 @@
   var WA = '491633170579';
   var WA_HREF = 'https://wa.me/' + WA + '?text=' + encodeURIComponent('Hallo G-Therm, ich habe eine Frage zu ');
 
+  // KI-Modus: URL des Backend-Vermittlers (Cloudflare Worker) hier eintragen, um den KI-Bot zu
+  // aktivieren. Leer lassen = geführter Assistent (kein Server). Anleitung in KI-BOT-SETUP.md.
+  var CHAT_API_URL = '';
+  var history = [];
+
   var BACK = { label: '↩ Weitere Themen', goto: 'start' };
 
   var TOPICS = {
@@ -242,6 +247,66 @@
     scrollDown();
   }
 
+  // ── KI-Modus (optional; nur wenn CHAT_API_URL gesetzt) ───────────────────
+  function addTyping() {
+    var el = document.createElement('div');
+    el.className = 'chat-msg chat-msg--bot chat-typing';
+    el.innerHTML = '<span></span><span></span><span></span>';
+    body.appendChild(el);
+    scrollDown();
+    return el;
+  }
+  function emergencyCTA(text) {
+    var t = ' ' + text.toLowerCase() + ' ';
+    var em = ['notfall', 'wasserschaden', 'rohrbruch', 'kein gas', 'gasgeruch', 'gas riecht', 'kein warm', 'ausfall', 'überschwemm', 'ueberschwemm'];
+    for (var i = 0; i < em.length; i++) {
+      if (t.indexOf(em[i]) !== -1) {
+        var acts = document.createElement('div');
+        acts.className = 'chat-actions';
+        var a = document.createElement('a');
+        a.className = 'chat-action chat-action--primary';
+        a.href = 'tel:' + TEL;
+        a.textContent = 'Im Notfall sofort anrufen: ' + TEL_TXT;
+        acts.appendChild(a);
+        body.appendChild(acts);
+        scrollDown();
+        return;
+      }
+    }
+  }
+  function guided(text) {
+    var key = matchTopic(text);
+    if (key) renderTopic(key); else renderFallback();
+  }
+  function askAI(text) {
+    history.push({ role: 'user', content: text });
+    if (history.length > 12) history = history.slice(-12);
+    var typing = addTyping();
+    var ctrl = ('AbortController' in window) ? new AbortController() : null;
+    var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 20000);
+    fetch(CHAT_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: history }),
+      signal: ctrl ? ctrl.signal : undefined
+    }).then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    }).then(function (data) {
+      clearTimeout(timer);
+      if (typing) typing.remove();
+      var reply = data && (data.reply || data.text) ? (data.reply || data.text) : '';
+      if (!reply) throw new Error('leer');
+      addBot(reply);
+      history.push({ role: 'assistant', content: reply });
+      emergencyCTA(text);
+    }).catch(function () {
+      clearTimeout(timer);
+      if (typing) typing.remove();
+      guided(text);
+    });
+  }
+
   function openChat() {
     panel.classList.add('is-open');
     launcher.setAttribute('aria-expanded', 'true');
@@ -269,7 +334,7 @@
     if (!text) return;
     addUser(text);
     input.value = '';
-    var key = matchTopic(text);
-    if (key) renderTopic(key); else renderFallback();
+    if (CHAT_API_URL) askAI(text);
+    else guided(text);
   });
 })();
