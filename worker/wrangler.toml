@@ -6,8 +6,8 @@ main = "gtherm-chat.js"
 compatibility_date = "2024-11-01"
 
 [vars]
-# Gemini-Modell (Free-Tier-tauglich). Bei Bedarf z. B. auf "gemini-2.0-flash" ändern.
-GEMINI_MODEL = "gemini-1.5-flash"
+# Gemini-Modell (Free-Tier-tauglich). Bei Bedarf z. B. auf "gemini-2.5-flash" ändern.
+GEMINI_MODEL = "gemini-2.0-flash"
 # Erlaubte Website-Herkünfte (Komma-getrennt). Anpassen, sobald die Domain g-therm.de verbunden ist.
 ALLOWED_ORIGIN = "https://www.g-therm.de,https://g-therm.de,https://musagueldes-arch.github.io"
 
