@@ -727,6 +727,14 @@ p { margin: 0 0 1rem; }
 .chat-chip { background: #fff; border: 1.5px solid var(--line); border-radius: 999px; padding: 7px 12px; font-size: .84rem; font-weight: 600; color: var(--steel); cursor: pointer; }
 .chat-chip:hover { border-color: var(--copper); color: var(--copper-600); }
 .chat-chip:focus-visible, .chat-action:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
+.chat-lead { align-self: stretch; display: flex; flex-direction: column; gap: 8px; background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 12px; }
+.chat-lead input, .chat-lead textarea { width: 100%; border: 1.5px solid var(--line); border-radius: 10px; padding: 9px 12px; font: inherit; font-size: .92rem; }
+.chat-lead textarea { resize: vertical; min-height: 40px; }
+.chat-lead input:focus, .chat-lead textarea:focus { outline: none; border-color: var(--copper); }
+.chat-lead button { margin-top: 2px; cursor: pointer; }
+.chat-lead button:disabled { opacity: .6; cursor: default; }
+.chat-lead__note { margin: 2px 0 0; font-size: .72rem; line-height: 1.4; color: var(--muted); }
+.chat-lead__note a { color: var(--copper-600); }
 .chat-input { display: flex; gap: 8px; padding: 10px; border-top: 1px solid var(--line); background: #fff; }
 .chat-input input { flex: 1; min-width: 0; border: 1.5px solid var(--line); border-radius: 999px; padding: 10px 14px; font: inherit; font-size: .92rem; }
 .chat-input input:focus { outline: none; border-color: var(--copper); }
