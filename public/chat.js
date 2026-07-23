@@ -1,6 +1,6 @@
 /* G-Therm Haustechnik — geführter FAQ-Chat-Assistent.
  * Rein clientseitig: keine Server, keine Cookies, keine Datenübertragung an Dritte.
- * Beantwortet vordefinierte Fragen und leitet sonst an Anruf / WhatsApp / Formular weiter.
+ * Beantwortet vordefinierte Fragen und leitet sonst an Anruf / Formular weiter.
  */
 (function () {
   'use strict';
@@ -9,8 +9,6 @@
 
   var TEL = '+4923454461855';
   var TEL_TXT = '0234 - 544 618 55';
-  var WA = '491633170579';
-  var WA_HREF = 'https://wa.me/' + WA + '?text=' + encodeURIComponent('Hallo G-Therm, ich habe eine Frage zu ');
   // Rückruf-/Lead-Erfassung: Versand über FormSubmit (formsubmit.co) – wie das Kontaktformular,
   // kein Server und kein Konto nötig. Die Anfrage landet per E-Mail bei info@g-therm.de.
   var FORM_ENDPOINT = 'https://formsubmit.co/ajax/info@g-therm.de';
@@ -82,8 +80,7 @@
       bot: 'Heizungsausfall, Rohrbruch oder Wasserschaden? Im Störfall am schnellsten telefonisch – oder melden Sie die Störung online mit Fotos.',
       actions: [
         { label: 'Jetzt anrufen: ' + TEL_TXT, tel: TEL, primary: true },
-        { label: 'Störung online melden', href: 'kundendienst.html' },
-        { label: 'Über WhatsApp', wa: true }
+        { label: 'Störung online melden', href: 'kundendienst.html' }
       ],
       options: [BACK]
     },
@@ -91,8 +88,7 @@
       bot: 'Wir sind Mo–Fr von 8:00 bis 17:00 Uhr für Sie da.\n📍 Lindener Str. 111, 44879 Bochum\n📞 ' + TEL_TXT + '\n✉️ info@g-therm.de',
       actions: [
         { label: 'Anrufen', tel: TEL, primary: true },
-        { label: 'E-Mail schreiben', href: 'mailto:info@g-therm.de' },
-        { label: 'Über WhatsApp', wa: true }
+        { label: 'E-Mail schreiben', href: 'mailto:info@g-therm.de' }
       ],
       options: [CALLBACK, BACK]
     },
@@ -185,7 +181,6 @@
   }
   function actionHref(a) {
     if (a.tel) return 'tel:' + a.tel;
-    if (a.wa) return WA_HREF;
     return a.href;
   }
   function renderTopic(key) {
@@ -211,7 +206,7 @@
         link.className = 'chat-action' + (a.primary ? ' chat-action--primary' : '');
         link.href = actionHref(a);
         if (a.href && a.href.indexOf('mailto:') !== 0) { /* interne Links normal */ }
-        if (a.wa || (a.href && /^https?:/.test(a.href))) { link.target = '_blank'; link.rel = 'noopener'; }
+        if (a.href && /^https?:/.test(a.href)) { link.target = '_blank'; link.rel = 'noopener'; }
         link.textContent = a.label;
         acts.appendChild(link);
       });
@@ -242,14 +237,12 @@
     acts.className = 'chat-actions';
     var list = [
       { label: 'Anrufen: ' + TEL_TXT, tel: TEL, primary: true },
-      { label: 'Über WhatsApp', wa: true },
       { label: 'Kundendienst-Anfrage', href: 'kundendienst.html' }
     ];
     list.forEach(function (a) {
       var link = document.createElement('a');
       link.className = 'chat-action' + (a.primary ? ' chat-action--primary' : '');
       link.href = actionHref(a);
-      if (a.wa) { link.target = '_blank'; link.rel = 'noopener'; }
       link.textContent = a.label;
       acts.appendChild(link);
     });
@@ -329,14 +322,13 @@
       }).catch(function () {
         if (typing) typing.remove();
         if (btn) { btn.disabled = false; btn.textContent = 'Rückruf anfordern'; }
-        addBot('Das Absenden hat leider nicht geklappt. Rufen Sie uns gern direkt an oder schreiben Sie über WhatsApp – wir helfen sofort:');
+        addBot('Das Absenden hat leider nicht geklappt. Rufen Sie uns gern direkt an – wir helfen sofort:');
         var acts = document.createElement('div');
         acts.className = 'chat-actions';
-        [{ label: 'Anrufen: ' + TEL_TXT, tel: TEL, primary: true }, { label: 'Über WhatsApp', wa: true }].forEach(function (a) {
+        [{ label: 'Anrufen: ' + TEL_TXT, tel: TEL, primary: true }, { label: 'Kundendienst-Anfrage', href: 'kundendienst.html' }].forEach(function (a) {
           var link = document.createElement('a');
           link.className = 'chat-action' + (a.primary ? ' chat-action--primary' : '');
           link.href = actionHref(a);
-          if (a.wa) { link.target = '_blank'; link.rel = 'noopener'; }
           link.textContent = a.label;
           acts.appendChild(link);
         });
