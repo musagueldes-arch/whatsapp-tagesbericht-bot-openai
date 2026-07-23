@@ -11,6 +11,10 @@
   var TEL_TXT = '0234 - 544 618 55';
   var WA = '491633170579';
   var WA_HREF = 'https://wa.me/' + WA + '?text=' + encodeURIComponent('Hallo G-Therm, ich habe eine Frage zu ');
+  // Rückruf-/Lead-Erfassung: Versand über FormSubmit (formsubmit.co) – wie das Kontaktformular,
+  // kein Server und kein Konto nötig. Die Anfrage landet per E-Mail bei info@g-therm.de.
+  var FORM_ENDPOINT = 'https://formsubmit.co/ajax/info@g-therm.de';
+  var CALLBACK = { label: '📞 Rückruf anfordern', goto: 'rueckruf' };
 
   // KI-Modus: URL des Backend-Vermittlers (Cloudflare Worker) hier eintragen, um den KI-Bot zu
   // aktivieren. Leer lassen = geführter Assistent (kein Server). Anleitung in KI-BOT-SETUP.md.
@@ -30,7 +34,8 @@
         { label: 'Störung / Notdienst', goto: 'notdienst' },
         { label: 'Wartung', goto: 'wartung' },
         { label: 'Öffnungszeiten & Kontakt', goto: 'kontakt' },
-        { label: 'Angebot / Kosten', goto: 'angebot' }
+        { label: 'Angebot / Kosten', goto: 'angebot' },
+        CALLBACK
       ]
     },
     waermepumpe: {
@@ -39,7 +44,7 @@
         { label: 'Wärmepumpen-Check starten', href: 'waermepumpe.html', primary: true },
         { label: 'Angebot anfordern', href: 'index.html#kontakt' }
       ],
-      options: [BACK]
+      options: [CALLBACK, BACK]
     },
     heizung: {
       bot: 'Neue Heizung, Modernisierung oder Reparatur – wir beraten Sie herstellerunabhängig und mit Festpreis.',
@@ -47,7 +52,7 @@
         { label: 'Zur Heizung', href: 'heizung.html', primary: true },
         { label: 'Angebot anfordern', href: 'index.html#kontakt' }
       ],
-      options: [BACK]
+      options: [CALLBACK, BACK]
     },
     klima: {
       bot: 'Wir planen, montieren und warten Klimaanlagen (Split) für Wohnung, Haus und Gewerbe – kühlen und heizen mit einem Gerät.',
@@ -55,7 +60,7 @@
         { label: 'Zur Klimatechnik', href: 'klimatechnik.html', primary: true },
         { label: 'Angebot anfordern', href: 'index.html#kontakt' }
       ],
-      options: [BACK]
+      options: [CALLBACK, BACK]
     },
     bad: {
       bot: 'Von der Reparatur bis zum kompletten Traumbad – aus einer Hand. Sie können Ihr Bad sogar online in 3D planen.',
@@ -63,7 +68,7 @@
         { label: 'Zu Sanitär & Bad', href: 'sanitaer-bad.html', primary: true },
         { label: 'Angebot anfordern', href: 'index.html#kontakt' }
       ],
-      options: [BACK]
+      options: [CALLBACK, BACK]
     },
     wartung: {
       bot: 'Regelmäßige Wartung hält Heizung, Wärmepumpe und Klimaanlage effizient und beugt Ausfällen vor – auf Wunsch mit Wartungsvertrag.',
@@ -71,7 +76,7 @@
         { label: 'Zur Wartung', href: 'wartung.html', primary: true },
         { label: 'Termin anfragen', href: 'kundendienst.html' }
       ],
-      options: [BACK]
+      options: [CALLBACK, BACK]
     },
     notdienst: {
       bot: 'Heizungsausfall, Rohrbruch oder Wasserschaden? Im Störfall am schnellsten telefonisch – oder melden Sie die Störung online mit Fotos.',
@@ -89,12 +94,13 @@
         { label: 'E-Mail schreiben', href: 'mailto:info@g-therm.de' },
         { label: 'Über WhatsApp', wa: true }
       ],
-      options: [BACK]
+      options: [CALLBACK, BACK]
     },
     angebot: {
-      bot: 'Ein Angebot ist bei uns kostenlos und unverbindlich. Schildern Sie uns kurz Ihr Anliegen – wir melden uns schnell zurück.',
+      bot: 'Ein Angebot ist bei uns kostenlos und unverbindlich. Am schnellsten geht ein Rückruf – Name und Nummer genügen, wir melden uns bei Ihnen.',
       actions: [
-        { label: 'Angebot anfordern', href: 'index.html#kontakt', primary: true },
+        { label: '📞 Rückruf anfordern', goto: 'rueckruf', primary: true },
+        { label: 'Angebot anfordern', href: 'index.html#kontakt' },
         { label: 'Kundendienst-Anfrage', href: 'kundendienst.html' }
       ],
       options: [BACK]
@@ -183,6 +189,7 @@
     return a.href;
   }
   function renderTopic(key) {
+    if (key === 'rueckruf') { renderRueckruf(); return; }
     var topic = TOPICS[key] || TOPICS.start;
     addBot(topic.bot);
 
@@ -190,6 +197,16 @@
       var acts = document.createElement('div');
       acts.className = 'chat-actions';
       topic.actions.forEach(function (a) {
+        // Aktion mit "goto" = interner Chat-Schritt (z. B. Rückruf-Formular) → Button statt Link
+        if (a.goto) {
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'chat-action' + (a.primary ? ' chat-action--primary' : '');
+          b.textContent = a.label;
+          b.addEventListener('click', function () { addUser(a.label); renderTopic(a.goto); });
+          acts.appendChild(b);
+          return;
+        }
         var link = document.createElement('a');
         link.className = 'chat-action' + (a.primary ? ' chat-action--primary' : '');
         link.href = actionHref(a);
@@ -239,12 +256,94 @@
     body.appendChild(acts);
     var chips = document.createElement('div');
     chips.className = 'chat-chips';
-    var btn = document.createElement('button');
-    btn.type = 'button'; btn.className = 'chat-chip'; btn.textContent = BACK.label;
-    btn.addEventListener('click', function () { addUser(BACK.label); renderTopic('start'); });
-    chips.appendChild(btn);
+    [CALLBACK, BACK].forEach(function (o) {
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.className = 'chat-chip'; btn.textContent = o.label;
+      btn.addEventListener('click', function () { addUser(o.label); renderTopic(o.goto); });
+      chips.appendChild(btn);
+    });
     body.appendChild(chips);
     scrollDown();
+  }
+
+  // ── Rückruf-/Lead-Erfassung (ohne Server, per FormSubmit) ────────────────
+  function renderRueckruf() {
+    addBot('Gerne! Hinterlassen Sie einfach Ihren Namen und eine Rückrufnummer – wir melden uns schnellstmöglich bei Ihnen. Ihr Anliegen können Sie kurz dazuschreiben (optional).');
+
+    var f = document.createElement('form');
+    f.className = 'chat-lead';
+    f.setAttribute('novalidate', 'novalidate');
+    f.innerHTML =
+      '<input type="text" name="name" placeholder="Ihr Name" autocomplete="name" required />' +
+      '<input type="tel" name="tel" placeholder="Rückrufnummer" autocomplete="tel" required />' +
+      '<textarea name="anliegen" rows="2" placeholder="Ihr Anliegen (optional)"></textarea>' +
+      '<button type="submit" class="chat-action chat-action--primary">Rückruf anfordern</button>' +
+      '<p class="chat-lead__note">Mit dem Absenden stimmen Sie der Verarbeitung Ihrer Angaben zur ' +
+        'Kontaktaufnahme zu. Details in der <a href="datenschutz.html" target="_blank" rel="noopener">Datenschutzerklärung</a>.</p>';
+    body.appendChild(f);
+
+    var chips = document.createElement('div');
+    chips.className = 'chat-chips';
+    var back = document.createElement('button');
+    back.type = 'button'; back.className = 'chat-chip'; back.textContent = BACK.label;
+    back.addEventListener('click', function () { addUser(BACK.label); renderTopic('start'); });
+    chips.appendChild(back);
+    body.appendChild(chips);
+    scrollDown();
+
+    f.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var elName = f.querySelector('[name="name"]');
+      var elTel = f.querySelector('[name="tel"]');
+      var elAnliegen = f.querySelector('[name="anliegen"]');
+      var name = (elName.value || '').trim();
+      var tel = (elTel.value || '').trim();
+      var anliegen = (elAnliegen.value || '').trim();
+      if (!name || !tel) {
+        if (!name) elName.focus(); else elTel.focus();
+        return;
+      }
+      var btn = f.querySelector('button[type="submit"]');
+      if (btn) { btn.disabled = true; btn.textContent = 'Wird gesendet …'; }
+      addUser('Rückruf: ' + name + ', ' + tel + (anliegen ? ' – ' + anliegen : ''));
+
+      var typing = addTyping();
+      fetch(FORM_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          Name: name,
+          Telefon: tel,
+          Anliegen: anliegen || '(keine Angabe)',
+          _subject: 'Rückruf-Wunsch über den Website-Chat',
+          _template: 'table',
+          _captcha: 'false'
+        })
+      }).then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      }).then(function () {
+        if (typing) typing.remove();
+        f.remove();
+        addBot('Vielen Dank, ' + name + '! Ihre Rückruf-Anfrage ist bei uns eingegangen – wir melden uns schnellstmöglich. Bei dringenden Fällen erreichen Sie uns direkt unter ' + TEL_TXT + '.');
+      }).catch(function () {
+        if (typing) typing.remove();
+        if (btn) { btn.disabled = false; btn.textContent = 'Rückruf anfordern'; }
+        addBot('Das Absenden hat leider nicht geklappt. Rufen Sie uns gern direkt an oder schreiben Sie über WhatsApp – wir helfen sofort:');
+        var acts = document.createElement('div');
+        acts.className = 'chat-actions';
+        [{ label: 'Anrufen: ' + TEL_TXT, tel: TEL, primary: true }, { label: 'Über WhatsApp', wa: true }].forEach(function (a) {
+          var link = document.createElement('a');
+          link.className = 'chat-action' + (a.primary ? ' chat-action--primary' : '');
+          link.href = actionHref(a);
+          if (a.wa) { link.target = '_blank'; link.rel = 'noopener'; }
+          link.textContent = a.label;
+          acts.appendChild(link);
+        });
+        body.appendChild(acts);
+        scrollDown();
+      });
+    });
   }
 
   // ── KI-Modus (optional; nur wenn CHAT_API_URL gesetzt) ───────────────────
