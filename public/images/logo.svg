@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 96" role="img" aria-label="G-Therm Haustechnik">
+  <!-- Flammen-/G-Marke -->
+  <g fill="currentColor">
+    <!-- Flammen-Trails links -->
+    <path d="M8 30 h34 l-8 8 H8 z"/>
+    <path d="M2 46 h44 l-8 8 H2 z"/>
+    <path d="M12 62 h30 l-8 8 H12 z"/>
+    <!-- G-Schwung (Flamme) -->
+    <path d="M78 14
+             c-20 0 -34 14 -34 34
+             c0 20 14 34 34 34
+             c11 0 20 -4 26 -12
+             l-13 -9
+             c-3 4 -7 6 -13 6
+             c-11 0 -18 -8 -18 -19
+             c0 -11 7 -19 18 -19
+             c6 0 11 2 14 7
+             l14 -8
+             c-6 -8 -15 -13 -28 -13 z"/>
+    <!-- G-Querbalken -->
+    <path d="M74 44 h30 v14 h-14 v-6 h-16 z"/>
+  </g>
+  <!-- Wortmarke -->
+  <text x="120" y="52" font-family="'Arial Black','Segoe UI',Impact,sans-serif" font-weight="900" font-size="42" letter-spacing="1" fill="currentColor">G-THERM</text>
+  <text x="122" y="80" font-family="'Segoe UI','Arial',sans-serif" font-weight="700" font-size="19" letter-spacing="7" fill="currentColor">HAUSTECHNIK</text>
+</svg>
