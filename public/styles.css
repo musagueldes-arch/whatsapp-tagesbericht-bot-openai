@@ -5,10 +5,10 @@
    ========================================================================== */
 
 :root {
-  --navy-900: #0a2c42;
-  --navy-800: #0d3550;
-  --navy-700: #123e5c;
-  --steel:    #1c6a99;
+  --navy-900: #072a55;
+  --navy-800: #0d3c72;
+  --navy-700: #17538f;
+  --steel:    #2064a8;
   --steel-100:#e7f0f6;
   --copper:   #d9591f;
   --copper-600:#bd4a14;
@@ -129,8 +129,8 @@ p { margin: 0 0 1rem; }
   padding: clamp(52px, 8vw, 104px) 0;
   background:
     radial-gradient(1100px 460px at 82% -8%, rgba(217,89,31,.22), transparent 60%),
-    radial-gradient(900px 500px at 0% 110%, rgba(28,106,153,.35), transparent 55%),
-    linear-gradient(158deg, var(--navy-900), var(--navy-700) 72%);
+    radial-gradient(900px 500px at 0% 110%, rgba(32,100,168,.45), transparent 55%),
+    linear-gradient(158deg, var(--navy-900) 0%, var(--navy-700) 55%, var(--steel) 100%);
 }
 .hero__inner { display: grid; grid-template-columns: 1.15fr .85fr; gap: 52px; align-items: center; }
 .hero h1 { color: #fff; margin-bottom: .35em; }
