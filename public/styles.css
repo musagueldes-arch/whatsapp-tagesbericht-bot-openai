@@ -727,6 +727,11 @@ p { margin: 0 0 1rem; }
 .chat-chip { background: #fff; border: 1.5px solid var(--line); border-radius: 999px; padding: 7px 12px; font-size: .84rem; font-weight: 600; color: var(--steel); cursor: pointer; }
 .chat-chip:hover { border-color: var(--copper); color: var(--copper-600); }
 .chat-chip:focus-visible, .chat-action:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
+/* Ort-Verlinkung (Einzugsgebiet) */
+.chip-links { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+.chip-link { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; border-radius: 999px; border: 1.5px solid var(--line); background: #fff; color: var(--navy-900); font-weight: 700; font-size: .92rem; text-decoration: none; transition: border-color .15s ease, color .15s ease, transform .15s ease; }
+.chip-link:hover { border-color: var(--copper); color: var(--copper-600); transform: translateY(-2px); }
+.chip-link:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
 .chat-lead { align-self: stretch; display: flex; flex-direction: column; gap: 8px; background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 12px; }
 .chat-lead input, .chat-lead textarea { width: 100%; border: 1.5px solid var(--line); border-radius: 10px; padding: 9px 12px; font: inherit; font-size: .92rem; }
 .chat-lead textarea { resize: vertical; min-height: 40px; }
