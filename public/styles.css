@@ -99,6 +99,9 @@ p { margin: 0 0 1rem; }
 .brand__mark { color: var(--copper); display: inline-flex; }
 .brand__text { font-weight: 600; }
 .brand__text strong { color: var(--navy-800); font-weight: 800; }
+.brand__logo { height: 42px; width: auto; display: block; }
+.brand__logo--light { filter: brightness(0) invert(1); }
+@media (max-width: 520px) { .brand__logo { height: 34px; } }
 
 .nav { display: flex; align-items: center; gap: 26px; }
 .nav a { font-weight: 600; color: var(--ink); font-size: .97rem; }
