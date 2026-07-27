@@ -99,6 +99,16 @@ p { margin: 0 0 1rem; }
 .brand__mark { color: var(--copper); display: inline-flex; }
 .brand__text { font-weight: 600; }
 .brand__text strong { color: var(--navy-800); font-weight: 800; }
+.container--narrow { max-width: 820px; }
+.prose { font-size: 1.05rem; line-height: 1.7; color: var(--ink); }
+.prose h2 { margin: 1.6em 0 .5em; font-size: 1.5rem; color: var(--navy-900); }
+.prose p { margin: 0 0 1em; }
+.prose a { color: var(--copper-600); font-weight: 600; }
+.prose a:hover { text-decoration: underline; }
+.prose .checklist, .prose .steps { margin: 0 0 1.2em; }
+.prose .fc-disclaimer { background: var(--mist); border-left: 3px solid var(--amber); padding: 12px 16px; border-radius: 0 10px 10px 0; font-size: .95rem; color: var(--muted); margin: 1.2em 0; }
+.scard__titlelink { color: var(--navy-900); text-decoration: none; }
+.scard__titlelink:hover { color: var(--copper-600); }
 .brand__logo { height: 42px; width: auto; display: block; }
 .brand__logo--light { filter: brightness(0) invert(1); }
 @media (max-width: 520px) { .brand__logo { height: 34px; } }
