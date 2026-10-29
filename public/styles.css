@@ -116,7 +116,8 @@ p { margin: 0 0 1rem; }
 .nav { display: flex; align-items: center; gap: 26px; }
 .nav a { font-weight: 600; color: var(--ink); font-size: .97rem; }
 .nav a:hover { color: var(--copper); }
-.nav__cta, .nav__cta:hover { color: #fff; }
+/* .nav a waere spezifischer und faerbte den Knopf dunkel auf Dunkelblau */
+.nav a.nav__cta, .nav a.nav__cta:hover { color: #fff; }
 
 .nav-toggle { display: none; flex-direction: column; gap: 5px; background: none; border: 0; cursor: pointer; padding: 8px; border-radius: 8px; }
 .nav-toggle span { width: 24px; height: 2.5px; background: var(--navy-900); border-radius: 2px; transition: .25s; }
@@ -129,9 +130,12 @@ p { margin: 0 0 1rem; }
   .nav {
     position: fixed; inset: 74px 0 auto 0; flex-direction: column; align-items: stretch; gap: 0;
     background: #fff; border-bottom: 1px solid var(--line); padding: 8px 22px 20px;
-    transform: translateY(-120%); transition: transform .3s ease; box-shadow: var(--shadow-md);
+    transform: translateY(-120%); transition: transform .3s ease, visibility 0s linear .3s; box-shadow: var(--shadow-md);
+    /* Der Header (backdrop-filter) ist Bezugsrahmen fuer position: fixed; ohne visibility
+       ragte der Anfrage-Knopf des geschlossenen Menues oben ins Bild */
+    visibility: hidden;
   }
-  .nav.open { transform: translateY(0); }
+  .nav.open { transform: translateY(0); visibility: visible; transition: transform .3s ease; }
   .nav a { padding: 14px 4px; border-bottom: 1px solid var(--line); }
   .nav__cta { margin-top: 12px; text-align: center; border-bottom: 0 !important; }
 }
