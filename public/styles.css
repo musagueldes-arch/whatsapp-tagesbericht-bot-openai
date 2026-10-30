@@ -215,6 +215,8 @@ p { margin: 0 0 1rem; }
 .scard:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); border-color: #c9d7e0; }
 /* --img via style="--img:url('images/leistung-x.jpg')" – sonst Verlauf */
 .scard__media { --img: none; position: relative; aspect-ratio: 16 / 9; display: flex; align-items: center; justify-content: center; overflow: hidden; background-size: cover; background-position: center; background-repeat: no-repeat; }
+/* Auf echten Fotos stoert das Platzhalter-Symbol */
+.scard__media--foto .scard__watermark { display: none; }
 .scard__media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(160deg, rgba(0,0,0,.05), transparent 45%, rgba(8,30,46,.35)); }
 .scard__watermark { position: relative; z-index: 1; width: 74px; height: 74px; color: rgba(255,255,255,.95); stroke-width: 1.4; opacity: .9; filter: drop-shadow(0 2px 6px rgba(0,0,0,.35)); }
 .scard__media--heizung  { background-image: var(--img), linear-gradient(150deg, #e0662a, #b83f13); }
